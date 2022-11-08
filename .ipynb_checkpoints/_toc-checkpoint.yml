@@ -3,14 +3,8 @@
 
 format: jb-book
 root: intro
-parts:
-- caption: Introduction
-  chapters:
-  - file: markdown
-  - file: notebooks
-  - file: Plan
-- caption: Feature Selection
-- caption: Random Forest 
-- caption: SVM
-- caption: Unsupervised Clustering 
-- caption: Closing Remarks 
+chapters:
+- file: markdown
+- file: notebooks
+- file: markdown-notebooks
+- file: mymarkdownfile
