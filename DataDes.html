@@ -248,6 +248,323 @@
                 
   <div class="tex2jax_ignore mathjax_ignore section" id="data-description">
 <h1>Data Description<a class="headerlink" href="#data-description" title="Permalink to this headline">¶</a></h1>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span> 
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
+<span class="ne">ModuleNotFoundError</span><span class="g g-Whitespace">                       </span>Traceback (most recent call last)
+<span class="n">Cell</span> <span class="n">In</span> <span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">line</span> <span class="mi">1</span>
+<span class="ne">----&gt; </span><span class="mi">1</span> <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span> 
+
+<span class="ne">ModuleNotFoundError</span>: No module named &#39;pandas&#39;
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-input docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;./data/fake_job_postings.csv&quot;</span><span class="p">)</span>
+<span class="n">data</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>job_id</th>
+      <th>title</th>
+      <th>location</th>
+      <th>department</th>
+      <th>salary_range</th>
+      <th>company_profile</th>
+      <th>description</th>
+      <th>requirements</th>
+      <th>benefits</th>
+      <th>telecommuting</th>
+      <th>has_company_logo</th>
+      <th>has_questions</th>
+      <th>employment_type</th>
+      <th>required_experience</th>
+      <th>required_education</th>
+      <th>industry</th>
+      <th>function</th>
+      <th>fraudulent</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1</td>
+      <td>Marketing Intern</td>
+      <td>US, NY, New York</td>
+      <td>Marketing</td>
+      <td>NaN</td>
+      <td>We're Food52, and we've created a groundbreaki...</td>
+      <td>Food52, a fast-growing, James Beard Award-winn...</td>
+      <td>Experience with content management systems a m...</td>
+      <td>NaN</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>Other</td>
+      <td>Internship</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>Marketing</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>2</td>
+      <td>Customer Service - Cloud Video Production</td>
+      <td>NZ, , Auckland</td>
+      <td>Success</td>
+      <td>NaN</td>
+      <td>90 Seconds, the worlds Cloud Video Production ...</td>
+      <td>Organised - Focused - Vibrant - Awesome!Do you...</td>
+      <td>What we expect from you:Your key responsibilit...</td>
+      <td>What you will get from usThrough being part of...</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>Full-time</td>
+      <td>Not Applicable</td>
+      <td>NaN</td>
+      <td>Marketing and Advertising</td>
+      <td>Customer Service</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>3</td>
+      <td>Commissioning Machinery Assistant (CMA)</td>
+      <td>US, IA, Wever</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>Valor Services provides Workforce Solutions th...</td>
+      <td>Our client, located in Houston, is actively se...</td>
+      <td>Implement pre-commissioning and commissioning ...</td>
+      <td>NaN</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>4</td>
+      <td>Account Executive - Washington DC</td>
+      <td>US, DC, Washington</td>
+      <td>Sales</td>
+      <td>NaN</td>
+      <td>Our passion for improving quality of life thro...</td>
+      <td>THE COMPANY: ESRI – Environmental Systems Rese...</td>
+      <td>EDUCATION: Bachelor’s or Master’s in GIS, busi...</td>
+      <td>Our culture is anything but corporate—we have ...</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>Full-time</td>
+      <td>Mid-Senior level</td>
+      <td>Bachelor's Degree</td>
+      <td>Computer Software</td>
+      <td>Sales</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>5</td>
+      <td>Bill Review Manager</td>
+      <td>US, FL, Fort Worth</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>SpotSource Solutions LLC is a Global Human Cap...</td>
+      <td>JOB TITLE: Itemization Review ManagerLOCATION:...</td>
+      <td>QUALIFICATIONS:RN license in the State of Texa...</td>
+      <td>Full Benefits Offered</td>
+      <td>0</td>
+      <td>1</td>
+      <td>1</td>
+      <td>Full-time</td>
+      <td>Mid-Senior level</td>
+      <td>Bachelor's Degree</td>
+      <td>Hospital &amp; Health Care</td>
+      <td>Health Care Provider</td>
+      <td>0</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<div class="cell tag_hide-input docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">data</span><span class="o">.</span><span class="n">info</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;class &#39;pandas.core.frame.DataFrame&#39;&gt;
+RangeIndex: 17880 entries, 0 to 17879
+Data columns (total 18 columns):
+ #   Column               Non-Null Count  Dtype 
+---  ------               --------------  ----- 
+ 0   job_id               17880 non-null  int64 
+ 1   title                17880 non-null  object
+ 2   location             17534 non-null  object
+ 3   department           6333 non-null   object
+ 4   salary_range         2868 non-null   object
+ 5   company_profile      14572 non-null  object
+ 6   description          17879 non-null  object
+ 7   requirements         15185 non-null  object
+ 8   benefits             10670 non-null  object
+ 9   telecommuting        17880 non-null  int64 
+ 10  has_company_logo     17880 non-null  int64 
+ 11  has_questions        17880 non-null  int64 
+ 12  employment_type      14409 non-null  object
+ 13  required_experience  10830 non-null  object
+ 14  required_education   9775 non-null   object
+ 15  industry             12977 non-null  object
+ 16  function             11425 non-null  object
+ 17  fraudulent           17880 non-null  int64 
+dtypes: int64(5), object(13)
+memory usage: 2.5+ MB
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">percent_missing</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">isnull</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">*</span> <span class="mi">100</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="n">missing_value_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;percent_missing&#39;</span><span class="p">:</span> <span class="n">percent_missing</span><span class="p">})</span>
+<span class="n">missing_value_data</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s1">&#39;percent_missing&#39;</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ascending</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
+<span class="n">missing_value_data</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>percent_missing</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>salary_range</th>
+      <td>83.959732</td>
+    </tr>
+    <tr>
+      <th>department</th>
+      <td>64.580537</td>
+    </tr>
+    <tr>
+      <th>required_education</th>
+      <td>45.329978</td>
+    </tr>
+    <tr>
+      <th>benefits</th>
+      <td>40.324385</td>
+    </tr>
+    <tr>
+      <th>required_experience</th>
+      <td>39.429530</td>
+    </tr>
+    <tr>
+      <th>function</th>
+      <td>36.101790</td>
+    </tr>
+    <tr>
+      <th>industry</th>
+      <td>27.421700</td>
+    </tr>
+    <tr>
+      <th>employment_type</th>
+      <td>19.412752</td>
+    </tr>
+    <tr>
+      <th>company_profile</th>
+      <td>18.501119</td>
+    </tr>
+    <tr>
+      <th>requirements</th>
+      <td>15.072707</td>
+    </tr>
+    <tr>
+      <th>location</th>
+      <td>1.935123</td>
+    </tr>
+    <tr>
+      <th>description</th>
+      <td>0.005593</td>
+    </tr>
+    <tr>
+      <th>job_id</th>
+      <td>0.000000</td>
+    </tr>
+    <tr>
+      <th>telecommuting</th>
+      <td>0.000000</td>
+    </tr>
+    <tr>
+      <th>has_questions</th>
+      <td>0.000000</td>
+    </tr>
+    <tr>
+      <th>has_company_logo</th>
+      <td>0.000000</td>
+    </tr>
+    <tr>
+      <th>title</th>
+      <td>0.000000</td>
+    </tr>
+    <tr>
+      <th>fraudulent</th>
+      <td>0.000000</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
 </div>
 
     <script type="text/x-thebe-config">
