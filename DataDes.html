@@ -265,7 +265,8 @@
 </div>
 </div>
 </div>
-<div class="cell tag_hide-input docutils container">
+<p>In this project, <strong>we aim to classify job postings as fraudulent and non-fraudulent using several features in the dataset.</strong> Let’s import the dataset and observe the first five rows.</p>
+<div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;./data/fake_job_postings.csv&quot;</span><span class="p">)</span>
 <span class="n">data</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
@@ -421,6 +422,27 @@
 </table>
 </div></div></div>
 </div>
+<p>From the dataset above, we can notice several important dataset characteristics we need to keep in mind while performing the analysis.</p>
+<ol class="simple">
+<li><p>The dataset consists of job posting information and labels (0 for non-fraudulent, 1 for fraudulent). Therefore,  The last column should not be used as a feature since it is the variable we want to predict. It will be helpful to find out how many fraudulent/non-fraudulent rows we have for each.</p></li>
+</ol>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">data</span><span class="p">[</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;fraudulent&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+<span class="mi">866</span>
+
+<span class="n">data</span><span class="p">[</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;fraudulent&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+<span class="mi">17014</span>
+</pre></div>
+</div>
+<blockquote>
+<div><p>We have <strong>866 fraudulent and 17014 non-fraudulent</strong> job postings in the dataset. This information can be helpful when we split the data into the test-set and the train-set.</p>
+</div></blockquote>
+<ol class="simple">
+<li><p>We can observe several null values across the dataset. We must remember that we must do the imputation before we start the analysis.</p></li>
+<li><p>Some columns contain text data, so we must go through some natural language processing to clean and sort the features. To avoid overfitting, we might also have to sort out important words to use as “super features.”</p></li>
+</ol>
+<p>The dataframe below shows more details about dataset including name of all columns and its data type.</p>
 <div class="cell tag_hide-input docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">data</span><span class="o">.</span><span class="n">info</span><span class="p">()</span>
@@ -457,7 +479,8 @@ memory usage: 2.5+ MB
 </div>
 </div>
 </div>
-<div class="cell docutils container">
+<p>From the dataframe above, we realize that some columns have more NA values than others. Knowing the percentage of NA for each column can be a helpful tool for feature selection.</p>
+<div class="cell tag_hide-input docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">percent_missing</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">isnull</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">*</span> <span class="mi">100</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 <span class="n">missing_value_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;percent_missing&#39;</span><span class="p">:</span> <span class="n">percent_missing</span><span class="p">})</span>
@@ -565,6 +588,7 @@ memory usage: 2.5+ MB
 </table>
 </div></div></div>
 </div>
+<p>It looks like <code class="docutils literal notranslate"><span class="pre">salary_range</span></code> and <code class="docutils literal notranslate"><span class="pre">department</span></code> have a high percentage of NAs. The existence of NA in the data can be helpful in prediction, but unlike the variables <code class="docutils literal notranslate"><span class="pre">required_education</span></code>, <code class="docutils literal notranslate"><span class="pre">benefits</span></code>, and <code class="docutils literal notranslate"><span class="pre">required_experience</span></code>, the presence of NA in <code class="docutils literal notranslate"><span class="pre">salary_range</span></code> and <code class="docutils literal notranslate"><span class="pre">department</span></code> looks not significant. To avoid overfitting, excluding those columns for our analysis will be safer.</p>
 </div>
 
     <script type="text/x-thebe-config">
