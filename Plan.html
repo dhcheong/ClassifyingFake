@@ -248,6 +248,9 @@
                 
   <div class="tex2jax_ignore mathjax_ignore section" id="train-and-test-split">
 <h1>Train and Test Split<a class="headerlink" href="#train-and-test-split" title="Permalink to this headline">¶</a></h1>
+<p>Since we have a relatively small number of fraudulent postings compared to non-fraudulent postings, we want to ensure that both the train and test set have the same percentage of fraudulent as the original dataset. In the original dataset, we have about 5% of fraudulent postings, so we will ensure that the train and test set have the same percentage to keep the representativeness of the train and test sets. We will use an 80%/20% split to ensure that we have enough data to train our model.</p>
+<p>To do this split correctly, we will do a <strong>stratified train-test split</strong> using the train_test_split() function in the scikit-learn Python machine-learning library.</p>
+<p>Here is the code I used to create the train and test set.</p>
 </div>
 
     <script type="text/x-thebe-config">
