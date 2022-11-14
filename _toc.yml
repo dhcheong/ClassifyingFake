@@ -9,6 +9,8 @@ parts:
   - file: markdown
   - file: DataDes
   - file: Plan
-- caption: Feature Selection
+- caption: Data Preprocessing
   chapters:
-  - file: mymarkdownfile
+  - file: dataprocess
+  - file: featurescreate
+  - file: featureselection
