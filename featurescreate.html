@@ -261,14 +261,45 @@
   <div class="tex2jax_ignore mathjax_ignore section" id="feature-creation">
 <h1>Feature Creation<a class="headerlink" href="#feature-creation" title="Permalink to this headline">¶</a></h1>
 <p>This page will focus on creating features from cleaned-text data by counting word frequency and some limitations regarding using such a method. Also, we will talk about how we should handle non-text columns in the data, especially the columns with categorical variables.</p>
-<p>First, we will load the data we cleaned on the previous page, and we will split this into train and test datasets. We split the dataset to ensure the test dataset does not influence when creating a pipeline. Technically, we are not supposed to know our test set before the completion of our pipeline. <strong>After we create the pipeline, we will apply the same pipeline we used for the train set to the test set to ensure both datasets have the same dimension.</strong></p>
+<p>First, we will load the data we cleaned on the previous page, and we will split this into train and test datasets. We split the dataset to ensure the test dataset does not influence when creating a pipeline. Technically, we are not supposed to know our test set before the completion of our pipeline. <strong>After we create the pipeline, we will apply the same pipeline we used for the train set to the test set to ensure both datasets have the same dimension.</strong>  Please refer to <a class="reference internal" href="Plan.html"><span class="doc std std-doc">here</span></a> if you want to know how I splited the dataset into train and test sets.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span> 
+<span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">train_test_split</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
+<span class="ne">ModuleNotFoundError</span><span class="g g-Whitespace">                       </span>Traceback (most recent call last)
+<span class="n">Cell</span> <span class="n">In</span> <span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">line</span> <span class="mi">1</span>
+<span class="ne">----&gt; </span><span class="mi">1</span> <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span> 
+<span class="g g-Whitespace">      </span><span class="mi">2</span> <span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">train_test_split</span>
+
+<span class="ne">ModuleNotFoundError</span>: No module named &#39;pandas&#39;
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;./data/fake_job_postings.csv&quot;</span><span class="p">)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span> <span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+<span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">test_size</span> <span class="o">=</span> <span class="mf">0.2</span><span class="p">,</span> <span class="n">random_state</span> <span class="o">=</span> <span class="mi">42</span><span class="p">,</span> <span class="n">stratify</span> <span class="o">=</span> <span class="n">y</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
 <p>As we mentioned earlier, we want each word to be a feature of the dataset. To do this, we will use the <strong>Bag of Words</strong> method that will ensure each description in the dataset is represented only with the word count (e.g., if the description contains the word, the column will mark it as 1, otherwise 0). However, only using the Bag of Words is somewhat problematic. Since frequency is dependent on the length of the text, longer texts can calculate a higher frequency for some unnecessary words that rarely appear across the data as a whole. This clearly can cause big trouble when we come to feature selection.</p>
 <p>To remedy this problem, we will standardize the word frequency using <strong>TF-IDF (Term Frequency-Inverse Document Frequency)</strong> so that all frequencies can be weighted. It is a numerical statistic intended to reflect how important a word is to a document in a collection, and here is how we calculate it.</p>
 <div class="math notranslate nohighlight">
 \[ \text{TF-IDF} = \text{TF} \times \text{IDF} \]</div>
-<p>where $<span class="math notranslate nohighlight">\( TF = \frac{\text{number of times the word appears in the description}}{\text{total number of the word in the entire dataset}}\)</span>$</p>
+<p>where</p>
 <div class="math notranslate nohighlight">
-\[ IDF = \log ( \frac{\text{number of description in the dataset}}{\text{number of description that contained the word}} )\]</div>
+\[TF = \frac{\text{number of times the word appears in the description}}{\text{total number of the word in the entire dataset}}\]</div>
+<div class="math notranslate nohighlight">
+\[IDF = \log ( \frac{\text{number of description in the dataset}}{\text{number of description that contained the word}} )\]</div>
 <p>Term Frequency (TF) measures how frequently a term occurs in a document. Inverse Document Frequency (IDF) is a factor that diminishes the weight of terms that occur very frequently in the document and increases the weight of words that occur rarely. As you observe here, as the word appears less frequently throughout the dataset, the IDF increases which decreases TF-IDF as a result. We gives more weight on the words that appear frequently across the entire dataset. This way, we can avoid possible outlier/confounding features in our dataset.</p>
 </div>
 

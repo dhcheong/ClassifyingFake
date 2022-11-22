@@ -305,6 +305,10 @@
   <div class="tex2jax_ignore mathjax_ignore section" id="data-cleaning">
 <h1>Data Cleaning<a class="headerlink" href="#data-cleaning" title="Permalink to this headline">¶</a></h1>
 <p>Feature creation is one of the most critical parts of this project since the data largely depends on text data which requires delicate text mining and data cleaning. The most common way of creating features using text data is to use a word frequency, and accurate recording frequency necessitates careful data cleaning. On this page, we will only perform data cleaning on the “description” columns to create features based on this column. Note that we only want to use the text data in the <code class="docutils literal notranslate"><span class="pre">description</span></code> column, not the <code class="docutils literal notranslate"><span class="pre">company</span> <span class="pre">profile</span></code>, <code class="docutils literal notranslate"><span class="pre">requirement</span></code> and <code class="docutils literal notranslate"><span class="pre">benefit</span></code> columns, since nearly every job posting has <code class="docutils literal notranslate"><span class="pre">description</span></code> while <code class="docutils literal notranslate"><span class="pre">company</span> <span class="pre">profile</span></code>,  <code class="docutils literal notranslate"><span class="pre">requirement</span></code> and <code class="docutils literal notranslate"><span class="pre">benefit</span></code> columns are often missing. Please refer to <a class="reference internal" href="DataDes.html"><span class="doc std std-doc">here</span></a> if you want to see how many variables are missing for each column.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>The other project combined ‘description’ with ‘company profile,’ ‘requirement’, and ‘benefit’ into a single column and performed the analysis, but I believe this can cause to confound our result. Even though all these columns consist of text data, each column must be treated independently and should not be combined without any special reasons.</p>
+</div>
 <div class="cell tag_hide-output docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
@@ -419,8 +423,12 @@
 <p>The primary goal of data cleaning in this project is to get the correct frequency of the words. Therefore we need lemmatization or stemming so that the words “love” and “loving” count as the same. In the original project, we used lemmatization instead of stemming, but this time, we will focus on using stemming for these reasons:</p>
 <ol class="simple">
 <li><p><strong>The stemming algorithm is more efficient and faster than lemmatization.</strong> Both methods return the root word, but in lemmatization, we use WordNet corpus and a corpus for stop words to produce a lemma which makes it slower than stemming.</p></li>
-<li><p><strong>Stemming is enough for this project.</strong> The main difference between these two methods is that lemmatization returns the actual word, while stemming doesn’t have to. Since we are not trying to use this in communicating, stemming provides a more straightforward solution.</p></li>
+<li><p><strong>Stemming is enough for this project.</strong> The main difference between these two methods is that lemmatization returns the actual word, while stemming doesn’t have to. Since we don’t need the actual word, stemming provides a more straightforward solution.</p></li>
 </ol>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The original project used lemmatization for no reasons.</p>
+</div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">porter</span><span class="o">=</span><span class="n">PorterStemmer</span><span class="p">()</span>
