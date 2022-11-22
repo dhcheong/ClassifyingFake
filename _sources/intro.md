@@ -21,7 +21,6 @@ Use this link to see my original work!
 
 [Original Work](https://docs.google.com/document/d/1gZEZb4nktCMqzClu4HUX0oagp9qk1xjivq6b6pSnlc8/edit?usp=sharing 'original work')
 
-
 ---
 
 # Thanks To...
