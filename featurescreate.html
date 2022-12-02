@@ -262,17 +262,17 @@
 <h1>Feature Creation<a class="headerlink" href="#feature-creation" title="Permalink to this headline">¶</a></h1>
 <p>This page will focus on creating features from cleaned-text data by counting word frequency and some limitations regarding using such a method. Also, we will talk about how we should handle non-text columns in the data, especially the columns with categorical variables.</p>
 <p>First, we will load the data we cleaned on the previous page, and we will split this into train and test datasets. We split the dataset to ensure the test dataset does not influence when creating a pipeline. Technically, we are not supposed to know our test set before the completion of our pipeline. <strong>After we create the pipeline, we will apply the same pipeline we used for the train set to the test set to ensure both datasets have the same dimension.</strong>  Please refer to <a class="reference internal" href="Plan.html"><span class="doc std std-doc">here</span></a> if you want to know how I splited the dataset into train and test sets.</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-output docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span> 
-<span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">train_test_split</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import pandas as pd 
+from sklearn.model_selection import train_test_split
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
 <div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
 <span class="ne">ModuleNotFoundError</span><span class="g g-Whitespace">                       </span>Traceback (most recent call last)
-<span class="n">Cell</span> <span class="n">In</span> <span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">line</span> <span class="mi">1</span>
+<span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">line</span> <span class="mi">1</span>
 <span class="ne">----&gt; </span><span class="mi">1</span> <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span> 
 <span class="g g-Whitespace">      </span><span class="mi">2</span> <span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">train_test_split</span>
 
@@ -283,13 +283,29 @@
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;./data/fake_job_postings.csv&quot;</span><span class="p">)</span>
-<span class="n">y</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-<span class="n">X</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span> <span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-<span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">test_size</span> <span class="o">=</span> <span class="mf">0.2</span><span class="p">,</span> <span class="n">random_state</span> <span class="o">=</span> <span class="mi">42</span><span class="p">,</span> <span class="n">stratify</span> <span class="o">=</span> <span class="n">y</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>data = pd.read_csv(&quot;./data/cleaned_fake_job_postings.csv&quot;)
+y = data.iloc[:, -1]
+X = data.iloc[:, :-1]
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, random_state = 42, stratify = y)
 </pre></div>
 </div>
 </div>
+</div>
+<p>Before we move on to the next step, we will create new dataframes for the train and test set and save these as csv to data folder. We will use the following code to do the work.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Resetting Index before we create new csv file for train and test</span>
+<span class="n">X_train</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">inplace</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">drop</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+<span class="n">y_train</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">inplace</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">drop</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+<span class="n">X_test</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">inplace</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">drop</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+<span class="n">y_test</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">inplace</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">drop</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># Combining X and y (which is just fraudulent column) </span>
+<span class="n">X_train</span><span class="p">[</span><span class="s2">&quot;fraudulent&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">y_train</span>
+<span class="n">X_test</span><span class="p">[</span><span class="s2">&quot;fraudulent&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">y_test</span>
+
+<span class="c1"># Save the combined dataframe to csv</span>
+<span class="n">X_train</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s2">&quot;./data/train_set.csv&quot;</span><span class="p">)</span>
+<span class="n">X_test</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s2">&quot;./data/test_set.csv&quot;</span><span class="p">)</span>
+</pre></div>
 </div>
 <p>As we mentioned earlier, we want each word to be a feature of the dataset. To do this, we will use the <strong>Bag of Words</strong> method that will ensure each description in the dataset is represented only with the word count (e.g., if the description contains the word, the column will mark it as 1, otherwise 0). However, only using the Bag of Words is somewhat problematic. Since frequency is dependent on the length of the text, longer texts can calculate a higher frequency for some unnecessary words that rarely appear across the data as a whole. This clearly can cause big trouble when we come to feature selection.</p>
 <p>To remedy this problem, we will standardize the word frequency using <strong>TF-IDF (Term Frequency-Inverse Document Frequency)</strong> so that all frequencies can be weighted. It is a numerical statistic intended to reflect how important a word is to a document in a collection, and here is how we calculate it.</p>
@@ -301,6 +317,212 @@
 <div class="math notranslate nohighlight">
 \[IDF = \log ( \frac{\text{number of description in the dataset}}{\text{number of description that contained the word}} )\]</div>
 <p>Term Frequency (TF) measures how frequently a term occurs in a document. Inverse Document Frequency (IDF) is a factor that diminishes the weight of terms that occur very frequently in the document and increases the weight of words that occur rarely. As you observe here, as the word appears less frequently throughout the dataset, the IDF increases which decreases TF-IDF as a result. We gives more weight on the words that appear frequently across the entire dataset. This way, we can avoid possible outlier/confounding features in our dataset.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>In the original project, we had to extracting the features and converting those using TF-IDF were a seperate step. In Python, sklearn has very useful feature extraction encoder, “TfidfVectorizer”, and this combines the extraction and conversion into a single step.</p>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from sklearn.feature_extraction.text import TfidfVectorizer
+
+#Import train dataset
+train_data = pd.read_csv(&quot;./data/train_set.csv&quot;)
+train_data[&quot;description&quot;].fillna(&#39;no_description&#39;, inplace = True)
+vec = TfidfVectorizer(smooth_idf=True)
+tfidf_description = vec.fit_transform(train_data[&quot;description&quot;])
+</pre></div>
+</div>
+</div>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>We have some NAs in the description column, which will cause the error with TfidfVectorizer if we don’t impute it. I decided to replace all NAs with “no_description” because NA may indicate a strong signal for fraudulent. For instance, a fraudulent posting might have no job description.</p>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>features_name = vec.get_feature_names_out()
+df_tfidfvect = pd.DataFrame(data = tfidf_description.toarray(), columns = features_name)
+df_tfidfvect.head()
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>aa</th>
+      <th>aaa</th>
+      <th>aaab</th>
+      <th>aab</th>
+      <th>aabc</th>
+      <th>aabd</th>
+      <th>aabf</th>
+      <th>aac</th>
+      <th>aaccd</th>
+      <th>aachen</th>
+      <th>...</th>
+      <th>zumero</th>
+      <th>zur</th>
+      <th>zurb</th>
+      <th>zurich</th>
+      <th>zusammenarbeitest</th>
+      <th>zusammenbringt</th>
+      <th>zweig</th>
+      <th>zyfax</th>
+      <th>zyka</th>
+      <th>zynga</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>0.164839</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+    </tr>
+  </tbody>
+</table>
+<p>5 rows × 40989 columns</p>
+</div></div></div>
+</div>
+<p>We will save our TfidfVectorizer as a pickle so that we can use it later to the test dataset.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;./pickle/tfidfvec.pkl&#39;</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">vec</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This step is essential because if we don’t use the same encoder to train and test the set, it might raise the dimension error in any machine learning algorithm. For example, if we use a different encoder, the feature “planner” in the training set will not appear in the test set so that we can get the numbers of a feature. To avoid this error, we should apply the encoder that was trained by the training set to the test set. Sometimes, people combine train and test sets and run TfidfVectorizer to avoid this error, but we must always assume that we don’t have any test set yet.</p>
+</div>
 </div>
 
     <script type="text/x-thebe-config">

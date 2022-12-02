@@ -311,27 +311,27 @@
 </div>
 <div class="cell tag_hide-output docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">nltk</span>
-<span class="kn">from</span> <span class="nn">nltk.corpus</span> <span class="kn">import</span> <span class="n">stopwords</span>
-<span class="kn">from</span> <span class="nn">nltk.stem.porter</span> <span class="kn">import</span> <span class="n">PorterStemmer</span>
-<span class="kn">from</span> <span class="nn">nltk.tokenize</span> <span class="kn">import</span> <span class="n">word_tokenize</span><span class="p">,</span><span class="n">sent_tokenize</span>
-<span class="kn">import</span> <span class="nn">re</span><span class="o">,</span><span class="nn">string</span><span class="o">,</span><span class="nn">unicodedata</span>
-<span class="kn">from</span> <span class="nn">nltk.tokenize.toktok</span> <span class="kn">import</span> <span class="n">ToktokTokenizer</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import pandas as pd
+import numpy as np
+import nltk
+from nltk.corpus import stopwords
+from nltk.stem.porter import PorterStemmer
+from nltk.tokenize import word_tokenize,sent_tokenize
+import re,string,unicodedata
+from nltk.tokenize.toktok import ToktokTokenizer
 
-<span class="n">nltk</span><span class="o">.</span><span class="n">download</span><span class="p">(</span><span class="s1">&#39;stopwords&#39;</span><span class="p">)</span>
-<span class="n">nltk</span><span class="o">.</span><span class="n">download</span><span class="p">(</span><span class="s1">&#39;averaged_perceptron_tagger&#39;</span><span class="p">)</span>
-<span class="n">nltk</span><span class="o">.</span><span class="n">download</span><span class="p">(</span><span class="s1">&#39;wordnet&#39;</span><span class="p">)</span>
-<span class="n">nltk</span><span class="o">.</span><span class="n">download</span><span class="p">(</span><span class="s1">&#39;omw-1.4&#39;</span><span class="p">)</span>
-<span class="n">nltk</span><span class="o">.</span><span class="n">download</span><span class="p">(</span><span class="s1">&#39;punkt&#39;</span><span class="p">)</span>
+nltk.download(&#39;stopwords&#39;)
+nltk.download(&#39;averaged_perceptron_tagger&#39;)
+nltk.download(&#39;wordnet&#39;)
+nltk.download(&#39;omw-1.4&#39;)
+nltk.download(&#39;punkt&#39;)
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
 <div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
 <span class="ne">ModuleNotFoundError</span><span class="g g-Whitespace">                       </span>Traceback (most recent call last)
-<span class="n">Cell</span> <span class="n">In</span> <span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">line</span> <span class="mi">1</span>
+<span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">line</span> <span class="mi">1</span>
 <span class="ne">----&gt; </span><span class="mi">1</span> <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="g g-Whitespace">      </span><span class="mi">2</span> <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="g g-Whitespace">      </span><span class="mi">3</span> <span class="kn">import</span> <span class="nn">nltk</span>
@@ -343,7 +343,7 @@
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;./data/fake_job_postings.csv&quot;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>data = pd.read_csv(&quot;./data/fake_job_postings.csv&quot;)
 </pre></div>
 </div>
 </div>
@@ -353,7 +353,7 @@
 <p>This steps must be done before removing stopwords. Otherwise, Python will treat “And” and “and” differently. Decapitalization of a text data can make our frequency more accurate.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;description&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;description&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>data[&quot;description&quot;] = data[&quot;description&quot;].str.lower()
 </pre></div>
 </div>
 </div>
@@ -364,55 +364,55 @@
 <p>The stopwords and punctuation must be removed since their frequency would not significantly improve prediction. We also pulled any strings that related to HTML/URL and emojis. <strong>Note that we substitute those removed URLs and HTML with “url” and “html”</strong> since the presence of URL/HTML can be significant in predicting, so we still want to count those. (For example, many spam emails include more URL/HTML than ham emails.) After we remove these words, we can observe that the words such as “\xa” and “amp” still exist in a sentence, so we will manually remove those words as much as we can. We will also remove all number from the text.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># This step loads stopwords from nltk library </span>
-<span class="n">stop</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">stopwords</span><span class="o">.</span><span class="n">words</span><span class="p">(</span><span class="s1">&#39;english&#39;</span><span class="p">))</span>
-<span class="n">stop</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">stop</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># This step loads stopwords from nltk library 
+stop = set(stopwords.words(&#39;english&#39;))
+stop = list(stop)
 </pre></div>
 </div>
 </div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">remove_URL</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
-    <span class="n">url</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;#url_\w*#&#39;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">url</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;url &#39;</span><span class="p">,</span><span class="nb">str</span><span class="p">(</span><span class="n">text</span><span class="p">))</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>def remove_URL(text):
+    url = re.compile(r&#39;#url_\w*#&#39;)
+    return url.sub(r&#39;url &#39;,str(text))
 
-<span class="k">def</span> <span class="nf">remove_emoji</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
-    <span class="n">emoji_pattern</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s2">&quot;[&quot;</span>
-                           <span class="sa">u</span><span class="s2">&quot;</span><span class="se">\U0001F600</span><span class="s2">-</span><span class="se">\U0001F64F</span><span class="s2">&quot;</span>  <span class="c1"># emoticons</span>
-                           <span class="sa">u</span><span class="s2">&quot;</span><span class="se">\U0001F300</span><span class="s2">-</span><span class="se">\U0001F5FF</span><span class="s2">&quot;</span>  <span class="c1"># symbols &amp; pictographs</span>
-                           <span class="sa">u</span><span class="s2">&quot;</span><span class="se">\U0001F680</span><span class="s2">-</span><span class="se">\U0001F6FF</span><span class="s2">&quot;</span>  <span class="c1"># transport &amp; map symbols</span>
-                           <span class="sa">u</span><span class="s2">&quot;</span><span class="se">\U0001F1E0</span><span class="s2">-</span><span class="se">\U0001F1FF</span><span class="s2">&quot;</span>  <span class="c1"># flags (iOS)</span>
-                           <span class="sa">u</span><span class="s2">&quot;</span><span class="se">\U00002702</span><span class="s2">-</span><span class="se">\U000027B0</span><span class="s2">&quot;</span>
-                           <span class="sa">u</span><span class="s2">&quot;</span><span class="se">\U000024C2</span><span class="s2">-</span><span class="se">\U0001F251</span><span class="s2">&quot;</span>
-                           <span class="s2">&quot;]+&quot;</span><span class="p">,</span> <span class="n">flags</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">UNICODE</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">emoji_pattern</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">text</span><span class="p">))</span>
+def remove_emoji(text):
+    emoji_pattern = re.compile(&quot;[&quot;
+                           u&quot;\U0001F600-\U0001F64F&quot;  # emoticons
+                           u&quot;\U0001F300-\U0001F5FF&quot;  # symbols &amp; pictographs
+                           u&quot;\U0001F680-\U0001F6FF&quot;  # transport &amp; map symbols
+                           u&quot;\U0001F1E0-\U0001F1FF&quot;  # flags (iOS)
+                           u&quot;\U00002702-\U000027B0&quot;
+                           u&quot;\U000024C2-\U0001F251&quot;
+                           &quot;]+&quot;, flags=re.UNICODE)
+    return emoji_pattern.sub(r&#39; &#39;, str(text))
 
-<span class="k">def</span> <span class="nf">remove_html</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
-    <span class="n">html</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;&lt;.*?&gt;&#39;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">html</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;html &#39;</span><span class="p">,</span><span class="nb">str</span><span class="p">(</span><span class="n">text</span><span class="p">))</span>
+def remove_html(text):
+    html=re.compile(r&#39;&lt;.*?&gt;&#39;)
+    return html.sub(r&#39;html &#39;,str(text))
 
-<span class="k">def</span> <span class="nf">remove_stopwords</span><span class="p">(</span><span class="n">words</span><span class="p">):</span>
-    <span class="k">return</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">word</span> <span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">words</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">()</span> <span class="k">if</span> <span class="n">word</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">stop</span><span class="p">)</span>
+def remove_stopwords(words):
+    return &#39; &#39;.join(word for word in str(words).split() if word not in stop)
 
-<span class="k">def</span> <span class="nf">remove_punctuation</span><span class="p">(</span><span class="n">words</span><span class="p">):</span>
-    <span class="k">return</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">word</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="n">string</span><span class="o">.</span><span class="n">punctuation</span><span class="p">)</span> <span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">words</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
+def remove_punctuation(words):
+    return &#39; &#39;.join(word.strip(string.punctuation) for word in str(words).split())
 
-<span class="k">def</span> <span class="nf">remove_dirty_words</span><span class="p">(</span><span class="n">words</span><span class="p">):</span>
-    <span class="n">dirty_words</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;[^\x00-\x7F]+|(&amp;amp)|\d|[^\w\s]&#39;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">dirty_words</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39; &#39;</span><span class="p">,</span><span class="nb">str</span><span class="p">(</span><span class="n">words</span><span class="p">))</span>
+def remove_dirty_words(words):
+    dirty_words=re.compile(r&#39;[^\x00-\x7F]+|(&amp;amp)|\d|[^\w\s]&#39;)
+    return dirty_words.sub(r&#39; &#39;,str(words))
 </pre></div>
 </div>
 </div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;description&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">description</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">remove_URL</span><span class="p">)</span>
-<span class="n">data</span><span class="p">[</span><span class="s2">&quot;description&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">description</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">remove_html</span><span class="p">)</span>
-<span class="n">data</span><span class="p">[</span><span class="s2">&quot;description&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">description</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">remove_emoji</span><span class="p">)</span>
-<span class="n">data</span><span class="p">[</span><span class="s2">&quot;description&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">description</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">remove_dirty_words</span><span class="p">)</span>
-<span class="n">data</span><span class="p">[</span><span class="s2">&quot;description&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">description</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">remove_punctuation</span><span class="p">)</span>
-<span class="n">data</span><span class="p">[</span><span class="s2">&quot;description&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">description</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">remove_stopwords</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>data[&quot;description&quot;] = data.description.apply(remove_URL)
+data[&quot;description&quot;] = data.description.apply(remove_html)
+data[&quot;description&quot;] = data.description.apply(remove_emoji)
+data[&quot;description&quot;] = data.description.apply(remove_dirty_words)
+data[&quot;description&quot;] = data.description.apply(remove_punctuation)
+data[&quot;description&quot;] = data.description.apply(remove_stopwords)
 </pre></div>
 </div>
 </div>
@@ -431,23 +431,23 @@
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">porter</span><span class="o">=</span><span class="n">PorterStemmer</span><span class="p">()</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>porter=PorterStemmer()
 
-<span class="k">def</span> <span class="nf">stemSentence</span><span class="p">(</span><span class="n">sentence</span><span class="p">):</span>
-    <span class="n">token_words</span><span class="o">=</span><span class="n">word_tokenize</span><span class="p">(</span><span class="n">sentence</span><span class="p">)</span>
-    <span class="n">token_words</span>
-    <span class="n">stem_sentence</span><span class="o">=</span><span class="p">[]</span>
-    <span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">token_words</span><span class="p">:</span>
-        <span class="n">stem_sentence</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">porter</span><span class="o">.</span><span class="n">stem</span><span class="p">(</span><span class="n">word</span><span class="p">))</span>
-        <span class="n">stem_sentence</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">stem_sentence</span><span class="p">)</span>
+def stemSentence(sentence):
+    token_words=word_tokenize(sentence)
+    token_words
+    stem_sentence=[]
+    for word in token_words:
+        stem_sentence.append(porter.stem(word))
+        stem_sentence.append(&quot; &quot;)
+    return &quot;&quot;.join(stem_sentence)
 </pre></div>
 </div>
 </div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;description&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">description</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">stemSentence</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>data[&quot;description&quot;] = data.description.apply(stemSentence)
 </pre></div>
 </div>
 </div>
