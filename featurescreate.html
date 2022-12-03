@@ -53,7 +53,7 @@
     <script async="async" src="_static/sphinx-thebe.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Feature Selection" href="featureselection.html" />
+    <link rel="next" title="Creating Power Feature" href="PF.html" />
     <link rel="prev" title="Data Cleaning" href="dataprocess.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
@@ -131,10 +131,22 @@
    Data Cleaning
   </a>
  </li>
- <li class="toctree-l1 current active">
+ <li class="toctree-l1 current active has-children">
   <a class="current reference internal" href="#">
    Feature Creation
   </a>
+  <input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/>
+  <label for="toctree-checkbox-1">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="PF.html">
+     Creating Power Feature
+    </a>
+   </li>
+  </ul>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="featureselection.html">
@@ -240,6 +252,19 @@
         <!-- Table of contents -->
         <div class="d-none d-md-block col-md-2 bd-toc show noprint">
             
+            <div class="tocsection onthispage pt-5 pb-3">
+                <i class="fas fa-list"></i> Contents
+            </div>
+            <nav id="bd-toc-nav" aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#creating-features-from-description-column">
+   Creating Features from Description Column
+  </a>
+ </li>
+</ul>
+
+            </nav>
         </div>
     </div>
 </div>
@@ -252,6 +277,19 @@
                 <div id="print-main-content">
                     <div id="jb-print-toc">
                         
+                        <div>
+                            <h2> Contents </h2>
+                        </div>
+                        <nav aria-label="Page">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#creating-features-from-description-column">
+   Creating Features from Description Column
+  </a>
+ </li>
+</ul>
+
+                        </nav>
                     </div>
                 </div>
             </div>
@@ -260,7 +298,7 @@
                 
   <div class="tex2jax_ignore mathjax_ignore section" id="feature-creation">
 <h1>Feature Creation<a class="headerlink" href="#feature-creation" title="Permalink to this headline">¶</a></h1>
-<p>This page will focus on creating features from cleaned-text data by counting word frequency and some limitations regarding using such a method. Also, we will talk about how we should handle non-text columns in the data, especially the columns with categorical variables.</p>
+<p>This section will focus on creating features from cleaned-text data by counting word frequency and some limitations regarding using such a method. Also, we will talk about how we should handle non-text columns in the data, especially the columns with categorical variables.</p>
 <p>First, we will load the data we cleaned on the previous page, and we will split this into train and test datasets. We split the dataset to ensure the test dataset does not influence when creating a pipeline. Technically, we are not supposed to know our test set before the completion of our pipeline. <strong>After we create the pipeline, we will apply the same pipeline we used for the train set to the test set to ensure both datasets have the same dimension.</strong>  Please refer to <a class="reference internal" href="Plan.html"><span class="doc std std-doc">here</span></a> if you want to know how I splited the dataset into train and test sets.</p>
 <div class="cell tag_hide-output docutils container">
 <div class="cell_input docutils container">
@@ -307,6 +345,8 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, rando
 <span class="n">X_test</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s2">&quot;./data/test_set.csv&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
+<div class="section" id="creating-features-from-description-column">
+<h2>Creating Features from Description Column<a class="headerlink" href="#creating-features-from-description-column" title="Permalink to this headline">¶</a></h2>
 <p>As we mentioned earlier, we want each word to be a feature of the dataset. To do this, we will use the <strong>Bag of Words</strong> method that will ensure each description in the dataset is represented only with the word count (e.g., if the description contains the word, the column will mark it as 1, otherwise 0). However, only using the Bag of Words is somewhat problematic. Since frequency is dependent on the length of the text, longer texts can calculate a higher frequency for some unnecessary words that rarely appear across the data as a whole. This clearly can cause big trouble when we come to feature selection.</p>
 <p>To remedy this problem, we will standardize the word frequency using <strong>TF-IDF (Term Frequency-Inverse Document Frequency)</strong> so that all frequencies can be weighted. It is a numerical statistic intended to reflect how important a word is to a document in a collection, and here is how we calculate it.</p>
 <div class="math notranslate nohighlight">
@@ -524,6 +564,9 @@ df_tfidfvect.head()
 <p>This step is essential because if we don’t use the same encoder to train and test the set, it might raise the dimension error in any machine learning algorithm. For example, if we use a different encoder, the feature “planner” in the training set will not appear in the test set so that we can get the numbers of a feature. To avoid this error, we should apply the encoder that was trained by the training set to the test set. Sometimes, people combine train and test sets and run TfidfVectorizer to avoid this error, but we must always assume that we don’t have any test set yet.</p>
 </div>
 </div>
+<div class="toctree-wrapper compound">
+</div>
+</div>
 
     <script type="text/x-thebe-config">
     {
@@ -557,10 +600,10 @@ df_tfidfvect.head()
             <p class="prev-next-title">Data Cleaning</p>
         </div>
     </a>
-    <a class='right-next' id="next-link" href="featureselection.html" title="next page">
+    <a class='right-next' id="next-link" href="PF.html" title="next page">
     <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Feature Selection</p>
+        <p class="prev-next-title">Creating Power Feature</p>
     </div>
     <i class="fas fa-angle-right"></i>
     </a>
