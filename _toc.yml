@@ -14,5 +14,6 @@ parts:
   - file: dataprocess
   - file: featurescreate
     sections:
+    - file: FT
     - file: PF
   - file: featureselection
