@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Feature Creation &#8212; Classifying Fake Job Posting Using Machine Learning Algorithm</title>
+    <title>Creating Features from the Description &#8212; Classifying Fake Job Posting Using Machine Learning Algorithm</title>
     
   <link href="_static/css/theme.css" rel="stylesheet">
   <link href="_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
@@ -42,6 +42,8 @@
     <script src="_static/copybutton.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
     <script src="_static/sphinx-book-theme.d59cb220de22ca1c485ebbdc042f0030.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script async="async" src="https://unpkg.com/thebe@0.5.1/lib/index.js"></script>
     <script>
         const thebe_selector = ".thebe"
@@ -51,8 +53,8 @@
     <script async="async" src="_static/sphinx-thebe.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Creating Features from the Description" href="FT.html" />
-    <link rel="prev" title="Data Cleaning" href="dataprocess.html" />
+    <link rel="next" title="Creating Features Through Investigation" href="PF.html" />
+    <link rel="prev" title="Feature Creation" href="featurescreate.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
     
@@ -130,7 +132,7 @@
   </a>
  </li>
  <li class="toctree-l1 current active has-children">
-  <a class="current reference internal" href="#">
+  <a class="reference internal" href="featurescreate.html">
    Feature Creation
   </a>
   <input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/>
@@ -138,9 +140,9 @@
    <i class="fas fa-chevron-down">
    </i>
   </label>
-  <ul>
-   <li class="toctree-l2">
-    <a class="reference internal" href="FT.html">
+  <ul class="current">
+   <li class="toctree-l2 current active">
+    <a class="current reference internal" href="#">
      Creating Features from the Description
     </a>
    </li>
@@ -197,7 +199,7 @@
         <!-- ipynb file if we had a myst markdown file -->
         
         <!-- Download raw file -->
-        <a class="dropdown-buttons" href="_sources/featurescreate.ipynb"><button type="button"
+        <a class="dropdown-buttons" href="_sources/FT.ipynb"><button type="button"
                 class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
                 data-placement="left">.ipynb</button></a>
         <!-- Download PDF via print -->
@@ -217,7 +219,7 @@
                 data-toggle="tooltip" data-placement="left" title="Source repository"><i
                     class="fab fa-github"></i>repository</button></a>
         <a class="issues-button"
-            href="https://github.com/executablebooks/jupyter-book/issues/new?title=Issue%20on%20page%20%2Ffeaturescreate.html&body=Your%20issue%20content%20here."><button
+            href="https://github.com/executablebooks/jupyter-book/issues/new?title=Issue%20on%20page%20%2FFT.html&body=Your%20issue%20content%20here."><button
                 type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
                 title="Open an issue"><i class="fas fa-lightbulb"></i>open issue</button></a>
         
@@ -238,7 +240,7 @@
         aria-label="Launch interactive content"><i class="fas fa-rocket"></i></button>
     <div class="dropdown-buttons">
         
-        <a class="binder-button" href="https://mybinder.org/v2/gh/executablebooks/jupyter-book/master?urlpath=tree/docs/featurescreate.ipynb"><button type="button"
+        <a class="binder-button" href="https://mybinder.org/v2/gh/executablebooks/jupyter-book/master?urlpath=tree/docs/FT.ipynb"><button type="button"
                 class="btn btn-secondary topbarbtn" title="Launch Binder" data-toggle="tooltip"
                 data-placement="left"><img class="binder-button-logo"
                     src="_static/images/logo_binder.svg"
@@ -262,7 +264,7 @@
         <div class="col-12 col-md-9 pl-md-3 pr-md-0">
             <!-- Table of contents that is only displayed when printing the page -->
             <div id="jb-print-docs-body" class="onlyprint">
-                <h1>Feature Creation</h1>
+                <h1>Creating Features from the Description</h1>
                 <!-- Table of contents -->
                 <div id="print-main-content">
                     <div id="jb-print-toc">
@@ -273,14 +275,26 @@
             
               <div>
                 
-  <div class="tex2jax_ignore mathjax_ignore section" id="feature-creation">
-<h1>Feature Creation<a class="headerlink" href="#feature-creation" title="Permalink to this headline">¶</a></h1>
-<p>This section will focus on creating features from cleaned-text data by counting word frequency and some limitations regarding using such a method. Also, we will talk about how we should handle non-text columns in the data, especially the columns with categorical variables. Additionally, we will take closer look into our training dataset to see if we can create more helpful features other than given columns.</p>
-<p>First, we will load the data we cleaned on the previous page, and we will split this into train and test datasets. We split the dataset to ensure the test dataset does not influence when creating a pipeline. Technically, we are not supposed to know our test set before the completion of our pipeline. <strong>After we create the pipeline, we will apply the same pipeline we used for the train set to the test set to ensure both datasets have the same dimension.</strong>  Please refer to <a class="reference internal" href="Plan.html"><span class="doc std std-doc">here</span></a> if you want to know how I splited the dataset into train and test sets.</p>
-<div class="cell tag_hide-output docutils container">
+  <div class="tex2jax_ignore mathjax_ignore section" id="creating-features-from-the-description">
+<h1>Creating Features from the Description<a class="headerlink" href="#creating-features-from-the-description" title="Permalink to this headline">¶</a></h1>
+<p>As we mentioned earlier, we want each word to be a feature of the dataset. To do this, we will use the <strong>Bag of Words</strong> method that will ensure each description in the dataset is represented only with the word count (e.g., if the description contains the word, the column will mark it as 1, otherwise 0). However, only using the Bag of Words is somewhat problematic. Since frequency is dependent on the length of the text, longer texts can calculate a higher frequency for some unnecessary words that rarely appear across the data as a whole. This clearly can cause big trouble when we come to feature selection.</p>
+<p>To remedy this problem, we will standardize the word frequency using <strong>TF-IDF (Term Frequency-Inverse Document Frequency)</strong> so that all frequencies can be weighted. It is a numerical statistic intended to reflect how important a word is to a document in a collection, and here is how we calculate it.</p>
+<div class="math notranslate nohighlight">
+\[ \text{TF-IDF} = \text{TF} \times \text{IDF} \]</div>
+<p>where</p>
+<div class="math notranslate nohighlight">
+\[TF = \frac{\text{number of times the word appears in the description}}{\text{total number of the word in the entire dataset}}\]</div>
+<div class="math notranslate nohighlight">
+\[IDF = \log ( \frac{\text{number of description in the dataset}}{\text{number of description that contained the word}} )\]</div>
+<p>Term Frequency (TF) measures how frequently a term occurs in a document. Inverse Document Frequency (IDF) is a factor that diminishes the weight of terms that occur very frequently in the document and increases the weight of words that occur rarely. As you observe here, as the word appears less frequently throughout the dataset, the IDF increases which decreases TF-IDF as a result. We gives more weight on the words that appear frequently across the entire dataset. This way, we can avoid possible outlier/confounding features in our dataset.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>In the original project, we had to extracting the features and converting those using TF-IDF were a seperate step. In Python, sklearn has very useful feature extraction encoder, “TfidfVectorizer”, and this combines the extraction and conversion into a single step.</p>
+</div>
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import pandas as pd 
-from sklearn.model_selection import train_test_split
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from sklearn.feature_extraction.text import TfidfVectorizer
+import pandas as pd 
 </pre></div>
 </div>
 </div>
@@ -288,41 +302,212 @@ from sklearn.model_selection import train_test_split
 <div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
 <span class="ne">ModuleNotFoundError</span><span class="g g-Whitespace">                       </span>Traceback (most recent call last)
 <span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">line</span> <span class="mi">1</span>
-<span class="ne">----&gt; </span><span class="mi">1</span> <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span> 
-<span class="g g-Whitespace">      </span><span class="mi">2</span> <span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">train_test_split</span>
+<span class="ne">----&gt; </span><span class="mi">1</span> <span class="kn">from</span> <span class="nn">sklearn.feature_extraction.text</span> <span class="kn">import</span> <span class="n">TfidfVectorizer</span>
+<span class="g g-Whitespace">      </span><span class="mi">2</span> <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span> 
 
-<span class="ne">ModuleNotFoundError</span>: No module named &#39;pandas&#39;
+<span class="ne">ModuleNotFoundError</span>: No module named &#39;sklearn&#39;
 </pre></div>
 </div>
 </div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>data = pd.read_csv(&quot;./data/cleaned_fake_job_postings.csv&quot;)
-y = data.iloc[:, -1]
-X = data.iloc[:, :-1]
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, random_state = 42, stratify = y)
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>train_data = pd.read_csv(&quot;./data/train_set.csv&quot;)
+train_data[&quot;description&quot;].fillna(&#39;no_description&#39;, inplace = True)
+vec = TfidfVectorizer(smooth_idf=True)
+tfidf_description = vec.fit_transform(train_data[&quot;description&quot;])
 </pre></div>
 </div>
 </div>
 </div>
-<p>Before we move on to the next step, we will create new dataframes for the train and test set and save these as csv to data folder. We will use the following code to do the work.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Resetting Index before we create new csv file for train and test</span>
-<span class="n">X_train</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">inplace</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">drop</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
-<span class="n">y_train</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">inplace</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">drop</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
-<span class="n">X_test</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">inplace</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">drop</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
-<span class="n">y_test</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">inplace</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">drop</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
-
-<span class="c1"># Combining X and y (which is just fraudulent column) </span>
-<span class="n">X_train</span><span class="p">[</span><span class="s2">&quot;fraudulent&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">y_train</span>
-<span class="n">X_test</span><span class="p">[</span><span class="s2">&quot;fraudulent&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">y_test</span>
-
-<span class="c1"># Save the combined dataframe to csv</span>
-<span class="n">X_train</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s2">&quot;./data/train_set.csv&quot;</span><span class="p">)</span>
-<span class="n">X_test</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s2">&quot;./data/test_set.csv&quot;</span><span class="p">)</span>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>We have some NAs in the description column, which will cause the error with TfidfVectorizer if we don’t impute it. I decided to replace all NAs with “no_description” because NA may indicate a strong signal for fraudulent. For instance, a fraudulent posting might have no job description.</p>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>features_name = vec.get_feature_names_out()
+df_tfidfvect = pd.DataFrame(data = tfidf_description.toarray(), columns = features_name)
+df_tfidfvect.head()
 </pre></div>
 </div>
-<div class="toctree-wrapper compound">
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>aa</th>
+      <th>aaa</th>
+      <th>aaab</th>
+      <th>aab</th>
+      <th>aabc</th>
+      <th>aabd</th>
+      <th>aabf</th>
+      <th>aac</th>
+      <th>aaccd</th>
+      <th>aachen</th>
+      <th>...</th>
+      <th>zumero</th>
+      <th>zur</th>
+      <th>zurb</th>
+      <th>zurich</th>
+      <th>zusammenarbeitest</th>
+      <th>zusammenbringt</th>
+      <th>zweig</th>
+      <th>zyfax</th>
+      <th>zyka</th>
+      <th>zynga</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>0.164839</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+    </tr>
+  </tbody>
+</table>
+<p>5 rows × 40989 columns</p>
+</div></div></div>
+</div>
+<p>We will save our TfidfVectorizer as a pickle so that we can use it later to the test dataset.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;./pickle/tfidfvec.pkl&#39;</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">vec</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This step is essential because if we don’t use the same encoder to train and test the set, it might raise the dimension error in any machine learning algorithm. For example, if we use a different encoder, the feature “planner” in the training set will not appear in the test set so that we can get the numbers of a feature. To avoid this error, we should apply the encoder that was trained by the training set to the test set. Sometimes, people combine train and test sets and run TfidfVectorizer to avoid this error, but we must always assume that we don’t have any test set yet.</p>
 </div>
 </div>
 
@@ -351,17 +536,17 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, rando
             
                 <!-- Previous / next buttons -->
 <div class='prev-next-area'> 
-    <a class='left-prev' id="prev-link" href="dataprocess.html" title="previous page">
+    <a class='left-prev' id="prev-link" href="featurescreate.html" title="previous page">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
             <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">Data Cleaning</p>
+            <p class="prev-next-title">Feature Creation</p>
         </div>
     </a>
-    <a class='right-next' id="next-link" href="FT.html" title="next page">
+    <a class='right-next' id="next-link" href="PF.html" title="next page">
     <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Creating Features from the Description</p>
+        <p class="prev-next-title">Creating Features Through Investigation</p>
     </div>
     <i class="fas fa-angle-right"></i>
     </a>
