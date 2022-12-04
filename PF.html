@@ -259,6 +259,18 @@
   <a class="reference internal nav-link" href="#first-investigation-relationship-between-location-and-fraudulent-posting">
    First Investigation: Relationship Between Location and Fraudulent Posting
   </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#distribution-of-state-of-the-entire-dataset">
+     Distribution of State of the Entire Dataset
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#distribution-of-state-of-fraudulent-and-non-fraudulent-dataset">
+     Distribution of State of Fraudulent and Non-Fraudulent Dataset
+    </a>
+   </li>
+  </ul>
  </li>
 </ul>
 
@@ -284,6 +296,18 @@
   <a class="reference internal nav-link" href="#first-investigation-relationship-between-location-and-fraudulent-posting">
    First Investigation: Relationship Between Location and Fraudulent Posting
   </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#distribution-of-state-of-the-entire-dataset">
+     Distribution of State of the Entire Dataset
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#distribution-of-state-of-fraudulent-and-non-fraudulent-dataset">
+     Distribution of State of Fraudulent and Non-Fraudulent Dataset
+    </a>
+   </li>
+  </ul>
  </li>
 </ul>
 
@@ -305,11 +329,16 @@ Let’s start with some simple hypothesis and investigate whether we can use our
 <div class="section" id="first-investigation-relationship-between-location-and-fraudulent-posting">
 <h2>First Investigation: Relationship Between Location and Fraudulent Posting<a class="headerlink" href="#first-investigation-relationship-between-location-and-fraudulent-posting" title="Permalink to this headline">¶</a></h2>
 <p>The first hypothesis we will investigate is that <strong>location, especially state, is related to whether the posting is fraudulent.</strong> For example, many fake job postings might have come from California or New York since those states have more job availability than others due to their high population. If the location is significantly related to the fraudulent variable, we can extract the state from the location and use it as a feature. Let’s investigate the relationship and see if the hypothesis is correct.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This part is not in the original project.</p>
+</div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import pandas as pd 
 import numpy as np
 import re
+from matplotlib import pyplot as plt
 </pre></div>
 </div>
 </div>
@@ -329,101 +358,44 @@ import re
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>train_data = pd.read_csv(&quot;./data/train_set.csv&quot;)
-data = train_data[[&quot;location&quot;, &quot;fraudulent&quot;]]
-data.head()
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_html"><div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>location</th>
-      <th>fraudulent</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>0</th>
-      <td>US, VA, Virginia Beach</td>
-      <td>0</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>US, TX, Dallas</td>
-      <td>0</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>NZ, , Auckland</td>
-      <td>0</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>US, NE, Omaha</td>
-      <td>0</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>US, CA, Los Angeles</td>
-      <td>0</td>
-    </tr>
-  </tbody>
-</table>
-</div></div></div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>target = data[&quot;location&quot;]
 </pre></div>
 </div>
 </div>
 </div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>target.fillna(&quot;No Location&quot;, inplace = True)
+<p>To extract the state from the location, let’s define the function to make the process easier.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">extract_state</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Extract state from the location&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot; The function can be used only when the state is formmated with two capital letter&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot; Input: Series, iterable object&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot; Output: List of States&quot;&quot;&quot;</span>
+    
+    <span class="n">s</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="s2">&quot;No Location&quot;</span><span class="p">,</span> <span class="n">inplace</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>    
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">)):</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="fm">__contains__</span><span class="p">(</span><span class="s2">&quot;US&quot;</span><span class="p">)):</span>
+            <span class="n">extracted</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;[A-Z]</span><span class="si">{2}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;[US]&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
+            <span class="c1"># Edge Case 1: Posting is from US but State is not posted</span>
+            <span class="k">if</span> <span class="n">extracted</span> <span class="o">==</span> <span class="p">[]:</span>
+                <span class="n">extracted</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Domestic&quot;</span><span class="p">]</span>
+            <span class="c1"># Edge Case 2: Regex detect a city name as a State name</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">extracted</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">extracted</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">extracted</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+            <span class="n">result</span> <span class="o">+=</span> <span class="n">extracted</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Edge Case 3: Location is not given </span>
+            <span class="k">if</span> <span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="p">[</span><span class="s2">&quot;No Location&quot;</span><span class="p">]:</span>
+                <span class="n">result</span> <span class="o">+=</span> <span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="c1"># Edge Case 4: Location is given but not in US</span>
+            <span class="k">elif</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;[A-Z]</span><span class="si">{2}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">!=</span> <span class="p">[]:</span>
+                <span class="n">result</span> <span class="o">+=</span> <span class="p">[</span><span class="s2">&quot;Foreign&quot;</span><span class="p">]</span>
+            <span class="c1"># Edge Case 5: Location cannot be identified from the given information</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">result</span> <span class="o">+=</span> <span class="p">[</span><span class="s2">&quot;No Location&quot;</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">result</span>
 </pre></div>
 </div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>C:\Users\isaac\AppData\Local\Temp\ipykernel_22856\1345136221.py:1: SettingWithCopyWarning: 
-A value is trying to be set on a copy of a slice from a DataFrame
-
-See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
-  target.fillna(&quot;No Location&quot;, inplace = True)
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>len(target)
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>14304
-</pre></div>
-</div>
-</div>
-</div>
-<p>To extract the state from the location, let’s define the function to make this easier.</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>def extract_state(s):
     &quot;&quot;&quot; Extract state from the location&quot;&quot;&quot;
@@ -461,204 +433,1178 @@ See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stab
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>re.findall(r&#39;[A-Z]{2}&#39;, re.sub(r&#39;[US]&#39;,&#39;&#39;,data[&quot;location&quot;][22]))
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>result = extract_state(train_data[&quot;location&quot;])
+train_data[&quot;state&quot;] = result
+train_data[[&quot;location&quot;, &quot;state&quot;, &quot;fraudulent&quot;]]
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[]
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>extract_state(data[&quot;location&quot;][0:100])
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[&#39;VA&#39;,
- &#39;TX&#39;,
- &#39;Foreign&#39;,
- &#39;NE&#39;,
- &#39;CA&#39;,
- &#39;NY&#39;,
- &#39;Foreign&#39;,
- &#39;OH&#39;,
- &#39;Foreign&#39;,
- &#39;MA&#39;,
- &#39;CA&#39;,
- &#39;TN&#39;,
- &#39;Foreign&#39;,
- &#39;TX&#39;,
- &#39;Foreign&#39;,
- &#39;Foreign&#39;,
- &#39;CO&#39;,
- &#39;TX&#39;,
- &#39;CA&#39;,
- &#39;Foreign&#39;,
- &#39;Foreign&#39;,
- &#39;Foreign&#39;,
- &#39;Domestic&#39;,
- &#39;Foreign&#39;,
- &#39;MA&#39;,
- &#39;NY&#39;,
- &#39;MO&#39;,
- &#39;Foreign&#39;,
- &#39;VA&#39;,
- &#39;Domestic&#39;,
- &#39;PA&#39;,
- &#39;Foreign&#39;,
- &#39;TX&#39;,
- &#39;AZ&#39;,
- &#39;CT&#39;,
- &#39;AZ&#39;,
- &#39;NY&#39;,
- &#39;FL&#39;,
- &#39;Foreign&#39;,
- &#39;NY&#39;,
- &#39;Foreign&#39;,
- &#39;MI&#39;,
- &#39;Foreign&#39;,
- &#39;Foreign&#39;,
- &#39;NE&#39;,
- &#39;CA&#39;,
- &#39;CA&#39;,
- &#39;CA&#39;,
- &#39;Foreign&#39;,
- &#39;Domestic&#39;,
- &#39;Foreign&#39;,
- &#39;Foreign&#39;,
- &#39;Foreign&#39;,
- &#39;NY&#39;,
- &#39;NY&#39;,
- &#39;WI&#39;,
- &#39;VA&#39;,
- &#39;NY&#39;,
- &#39;WV&#39;,
- &#39;Foreign&#39;,
- &#39;Foreign&#39;,
- &#39;OH&#39;,
- &#39;AZ&#39;,
- &#39;AZ&#39;,
- &#39;Domestic&#39;,
- &#39;No Location&#39;,
- &#39;FL&#39;,
- &#39;Foreign&#39;,
- &#39;Foreign&#39;,
- &#39;Foreign&#39;,
- &#39;CA&#39;,
- &#39;Foreign&#39;,
- &#39;Foreign&#39;,
- &#39;NY&#39;,
- &#39;OH&#39;,
- &#39;CA&#39;,
- &#39;Foreign&#39;,
- &#39;Foreign&#39;,
- &#39;Foreign&#39;,
- &#39;Foreign&#39;,
- &#39;No Location&#39;,
- &#39;MO&#39;,
- &#39;Foreign&#39;,
- &#39;Foreign&#39;,
- &#39;IL&#39;,
- &#39;NY&#39;,
- &#39;CA&#39;,
- &#39;CA&#39;,
- &#39;Domestic&#39;,
- &#39;Foreign&#39;,
- &#39;Foreign&#39;,
- &#39;HI&#39;,
- &#39;PA&#39;,
- &#39;Foreign&#39;,
- &#39;VA&#39;,
- &#39;GA&#39;,
- &#39;Foreign&#39;,
- &#39;MA&#39;,
- &#39;NY&#39;,
- &#39;Foreign&#39;]
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>len(extract_state(data[&quot;location&quot;][0:10000]))
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>10000
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>len(extract_state(data[&quot;location&quot;]))
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>14133
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>len(extract_state(data[&quot;location&quot;]))
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>C:\Users\isaac\AppData\Local\Temp\ipykernel_22856\2475804657.py:7: SettingWithCopyWarning: 
-A value is trying to be set on a copy of a slice from a DataFrame
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
 
-See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
-  s.fillna(&quot;No Location&quot;, inplace = True)
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>location</th>
+      <th>state</th>
+      <th>fraudulent</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>US, VA, Virginia Beach</td>
+      <td>VA</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>US, TX, Dallas</td>
+      <td>TX</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>NZ, , Auckland</td>
+      <td>Foreign</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>US, NE, Omaha</td>
+      <td>NE</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>US, CA, Los Angeles</td>
+      <td>CA</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>14299</th>
+      <td>US, CA, Irvine</td>
+      <td>CA</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>14300</th>
+      <td>GR, I, Athens</td>
+      <td>Foreign</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>14301</th>
+      <td>US, NJ, Elmwood Park</td>
+      <td>NJ</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>14302</th>
+      <td>US, AZ, Phoenix</td>
+      <td>AZ</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>14303</th>
+      <td>CA, ON, Toronto</td>
+      <td>Foreign</td>
+      <td>0</td>
+    </tr>
+  </tbody>
+</table>
+<p>14304 rows × 3 columns</p>
+</div></div></div>
+</div>
+<p>Now, let’s use the extracted state to validate our hypothesis.
+First of all, let’s observe the distribution of state in the entire dataset.</p>
+<div class="section" id="distribution-of-state-of-the-entire-dataset">
+<h3>Distribution of State of the Entire Dataset<a class="headerlink" href="#distribution-of-state-of-the-entire-dataset" title="Permalink to this headline">¶</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>combined_data = train_data[&quot;state&quot;].value_counts().to_frame()
+combined_data = combined_data.reset_index().rename(columns = {&#39;index&#39;:&#39;state&#39;, &#39;state&#39;:&#39;count&#39;})
+combined_data[&quot;percentage&quot;] = (combined_data[&quot;count&quot;] / combined_data[&quot;count&quot;].sum()) * 100
+combined_data
 </pre></div>
 </div>
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>14304
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>state</th>
+      <th>count</th>
+      <th>percentage</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>Foreign</td>
+      <td>5504</td>
+      <td>38.478747</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>CA</td>
+      <td>1617</td>
+      <td>11.304530</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>NY</td>
+      <td>1003</td>
+      <td>7.012025</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>TX</td>
+      <td>806</td>
+      <td>5.634787</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>Domestic</td>
+      <td>584</td>
+      <td>4.082774</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>IL</td>
+      <td>326</td>
+      <td>2.279083</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>FL</td>
+      <td>322</td>
+      <td>2.251119</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>OH</td>
+      <td>304</td>
+      <td>2.125280</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>No Location</td>
+      <td>280</td>
+      <td>1.957494</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>MA</td>
+      <td>262</td>
+      <td>1.831655</td>
+    </tr>
+    <tr>
+      <th>10</th>
+      <td>VA</td>
+      <td>257</td>
+      <td>1.796700</td>
+    </tr>
+    <tr>
+      <th>11</th>
+      <td>PA</td>
+      <td>248</td>
+      <td>1.733781</td>
+    </tr>
+    <tr>
+      <th>12</th>
+      <td>MI</td>
+      <td>233</td>
+      <td>1.628915</td>
+    </tr>
+    <tr>
+      <th>13</th>
+      <td>DC</td>
+      <td>215</td>
+      <td>1.503076</td>
+    </tr>
+    <tr>
+      <th>14</th>
+      <td>GA</td>
+      <td>189</td>
+      <td>1.321309</td>
+    </tr>
+    <tr>
+      <th>15</th>
+      <td>NC</td>
+      <td>180</td>
+      <td>1.258389</td>
+    </tr>
+    <tr>
+      <th>16</th>
+      <td>NJ</td>
+      <td>160</td>
+      <td>1.118568</td>
+    </tr>
+    <tr>
+      <th>17</th>
+      <td>OR</td>
+      <td>156</td>
+      <td>1.090604</td>
+    </tr>
+    <tr>
+      <th>18</th>
+      <td>WA</td>
+      <td>142</td>
+      <td>0.992729</td>
+    </tr>
+    <tr>
+      <th>19</th>
+      <td>MN</td>
+      <td>140</td>
+      <td>0.978747</td>
+    </tr>
+    <tr>
+      <th>20</th>
+      <td>MO</td>
+      <td>131</td>
+      <td>0.915828</td>
+    </tr>
+    <tr>
+      <th>21</th>
+      <td>WI</td>
+      <td>120</td>
+      <td>0.838926</td>
+    </tr>
+    <tr>
+      <th>22</th>
+      <td>AZ</td>
+      <td>116</td>
+      <td>0.810962</td>
+    </tr>
+    <tr>
+      <th>23</th>
+      <td>CO</td>
+      <td>110</td>
+      <td>0.769016</td>
+    </tr>
+    <tr>
+      <th>24</th>
+      <td>IN</td>
+      <td>95</td>
+      <td>0.664150</td>
+    </tr>
+    <tr>
+      <th>25</th>
+      <td>NV</td>
+      <td>88</td>
+      <td>0.615213</td>
+    </tr>
+    <tr>
+      <th>26</th>
+      <td>MD</td>
+      <td>87</td>
+      <td>0.608221</td>
+    </tr>
+    <tr>
+      <th>27</th>
+      <td>CT</td>
+      <td>87</td>
+      <td>0.608221</td>
+    </tr>
+    <tr>
+      <th>28</th>
+      <td>KY</td>
+      <td>76</td>
+      <td>0.531320</td>
+    </tr>
+    <tr>
+      <th>29</th>
+      <td>TN</td>
+      <td>67</td>
+      <td>0.468400</td>
+    </tr>
+    <tr>
+      <th>30</th>
+      <td>IA</td>
+      <td>66</td>
+      <td>0.461409</td>
+    </tr>
+    <tr>
+      <th>31</th>
+      <td>AL</td>
+      <td>57</td>
+      <td>0.398490</td>
+    </tr>
+    <tr>
+      <th>32</th>
+      <td>OK</td>
+      <td>53</td>
+      <td>0.370526</td>
+    </tr>
+    <tr>
+      <th>33</th>
+      <td>LA</td>
+      <td>29</td>
+      <td>0.202740</td>
+    </tr>
+    <tr>
+      <th>34</th>
+      <td>NE</td>
+      <td>26</td>
+      <td>0.181767</td>
+    </tr>
+    <tr>
+      <th>35</th>
+      <td>ID</td>
+      <td>23</td>
+      <td>0.160794</td>
+    </tr>
+    <tr>
+      <th>36</th>
+      <td>WV</td>
+      <td>22</td>
+      <td>0.153803</td>
+    </tr>
+    <tr>
+      <th>37</th>
+      <td>NH</td>
+      <td>19</td>
+      <td>0.132830</td>
+    </tr>
+    <tr>
+      <th>38</th>
+      <td>ND</td>
+      <td>19</td>
+      <td>0.132830</td>
+    </tr>
+    <tr>
+      <th>39</th>
+      <td>DE</td>
+      <td>15</td>
+      <td>0.104866</td>
+    </tr>
+    <tr>
+      <th>40</th>
+      <td>NM</td>
+      <td>11</td>
+      <td>0.076902</td>
+    </tr>
+    <tr>
+      <th>41</th>
+      <td>AR</td>
+      <td>10</td>
+      <td>0.069911</td>
+    </tr>
+    <tr>
+      <th>42</th>
+      <td>AK</td>
+      <td>9</td>
+      <td>0.062919</td>
+    </tr>
+    <tr>
+      <th>43</th>
+      <td>RI</td>
+      <td>9</td>
+      <td>0.062919</td>
+    </tr>
+    <tr>
+      <th>44</th>
+      <td>MT</td>
+      <td>8</td>
+      <td>0.055928</td>
+    </tr>
+    <tr>
+      <th>45</th>
+      <td>WY</td>
+      <td>7</td>
+      <td>0.048937</td>
+    </tr>
+    <tr>
+      <th>46</th>
+      <td>ME</td>
+      <td>5</td>
+      <td>0.034955</td>
+    </tr>
+    <tr>
+      <th>47</th>
+      <td>HI</td>
+      <td>4</td>
+      <td>0.027964</td>
+    </tr>
+    <tr>
+      <th>48</th>
+      <td>VT</td>
+      <td>3</td>
+      <td>0.020973</td>
+    </tr>
+    <tr>
+      <th>49</th>
+      <td>DR</td>
+      <td>1</td>
+      <td>0.006991</td>
+    </tr>
+    <tr>
+      <th>50</th>
+      <td>GR</td>
+      <td>1</td>
+      <td>0.006991</td>
+    </tr>
+    <tr>
+      <th>51</th>
+      <td>BL</td>
+      <td>1</td>
+      <td>0.006991</td>
+    </tr>
+    <tr>
+      <th>52</th>
+      <td>AT</td>
+      <td>1</td>
+      <td>0.006991</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>sorted_df = combined_data.sort_values(&#39;percentage&#39;)
+sorted_df = sorted_df[sorted_df[&#39;percentage&#39;] &gt; 1]
+x = sorted_df[&#39;state&#39;]
+y = sorted_df[&#39;percentage&#39;]
+
+plt.figure(figsize=(5,5))
+plt.barh(x,y)
+plt.xlabel(&quot;Percentage&quot;, size=12)
+plt.ylabel(&quot;State&quot;, size=12)
+plt.title(&quot;Percent Distribution of State of the Training Set&quot;, size=13)
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Text(0.5, 1.0, &#39;Percent Distribution of State of the Training Set)&#39;)
+</pre></div>
+</div>
+<img alt="_images/PF_9_1.png" src="_images/PF_9_1.png" />
+</div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Foreign: the job posting has a location outside of the US
+Domestic: the job posting has a US location, but a specific state name is not given.
+No Location: the job posting did not include a location</p>
+</div>
+<p>The distribution of the state of the entire dataset shows that about 40% of job posting is from companies outside the US, and about 20% of job posting is from either California or New York. The result is quite surprising because I was not expecting to see such a high number of ‘foreign.’</p>
+<p>Let’s see if we see a notable difference in distribution when we split the dataset into fraudulent and non-fraudulent.</p>
+</div>
+<div class="section" id="distribution-of-state-of-fraudulent-and-non-fraudulent-dataset">
+<h3>Distribution of State of Fraudulent and Non-Fraudulent Dataset<a class="headerlink" href="#distribution-of-state-of-fraudulent-and-non-fraudulent-dataset" title="Permalink to this headline">¶</a></h3>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Convinent function for data frame display 
+
+from IPython.core.display import display, HTML
+
+def display_side_by_side(dfs:list, captions:list, tablespacing=5):
+    &quot;&quot;&quot;Display tables side by side to save vertical space
+    Input:
+        dfs: list of pandas.DataFrame
+        captions: list of table captions
+    &quot;&quot;&quot;
+    output = &quot;&quot;
+    for (caption, df) in zip(captions, dfs):
+        output += df.style.set_table_attributes(&quot;style=&#39;display:inline&#39;&quot;).set_caption(caption)._repr_html_()
+        output += tablespacing * &quot;\xa0&quot;
+    display(HTML(output))
 </pre></div>
 </div>
 </div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>data[&quot;location&quot;][0]
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>fraud_data = train_data[train_data[&#39;fraudulent&#39;] == 1]
+non_fraud_data = train_data[train_data[&#39;fraudulent&#39;] == 0]
+
+f_combined_data = fraud_data[&quot;state&quot;].value_counts().to_frame()
+f_combined_data = f_combined_data.reset_index().rename(columns = {&#39;index&#39;:&#39;state&#39;, &#39;state&#39;:&#39;count&#39;})
+f_combined_data[&quot;percentage&quot;] = (f_combined_data[&quot;count&quot;] / f_combined_data[&quot;count&quot;].sum()) * 100
+
+nf_combined_data = non_fraud_data[&quot;state&quot;].value_counts().to_frame()
+nf_combined_data = nf_combined_data.reset_index().rename(columns = {&#39;index&#39;:&#39;state&#39;, &#39;state&#39;:&#39;count&#39;})
+nf_combined_data[&quot;percentage&quot;] = (nf_combined_data[&quot;count&quot;] / nf_combined_data[&quot;count&quot;].sum()) * 100
+
+display_side_by_side([nf_combined_data, f_combined_data], [&#39;Non-Fraudulent&#39;, &#39;Fraudulent&#39;], tablespacing =20)
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&#39;US, VA, Virginia Beach&#39;
-</pre></div>
-</div>
-</div>
+<div class="output text_html"><style type="text/css">
+</style>
+<table id="T_761a5" style='display:inline'>
+  <caption>Non-Fraudulent</caption>
+  <thead>
+    <tr>
+      <th class="blank level0" >&nbsp;</th>
+      <th id="T_761a5_level0_col0" class="col_heading level0 col0" >state</th>
+      <th id="T_761a5_level0_col1" class="col_heading level0 col1" >count</th>
+      <th id="T_761a5_level0_col2" class="col_heading level0 col2" >percentage</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th id="T_761a5_level0_row0" class="row_heading level0 row0" >0</th>
+      <td id="T_761a5_row0_col0" class="data row0 col0" >Foreign</td>
+      <td id="T_761a5_row0_col1" class="data row0 col1" >5407</td>
+      <td id="T_761a5_row0_col2" class="data row0 col2" >39.725222</td>
+    </tr>
+    <tr>
+      <th id="T_761a5_level0_row1" class="row_heading level0 row1" >1</th>
+      <td id="T_761a5_row1_col0" class="data row1 col0" >CA</td>
+      <td id="T_761a5_row1_col1" class="data row1 col1" >1509</td>
+      <td id="T_761a5_row1_col2" class="data row1 col2" >11.086621</td>
+    </tr>
+    <tr>
+      <th id="T_761a5_level0_row2" class="row_heading level0 row2" >2</th>
+      <td id="T_761a5_row2_col0" class="data row2 col0" >NY</td>
+      <td id="T_761a5_row2_col1" class="data row2 col1" >947</td>
+      <td id="T_761a5_row2_col2" class="data row2 col2" >6.957608</td>
+    </tr>
+    <tr>
+      <th id="T_761a5_level0_row3" class="row_heading level0 row3" >3</th>
+      <td id="T_761a5_row3_col0" class="data row3 col0" >TX</td>
+      <td id="T_761a5_row3_col1" class="data row3 col1" >681</td>
+      <td id="T_761a5_row3_col2" class="data row3 col2" >5.003306</td>
+    </tr>
+    <tr>
+      <th id="T_761a5_level0_row4" class="row_heading level0 row4" >4</th>
+      <td id="T_761a5_row4_col0" class="data row4 col0" >Domestic</td>
+      <td id="T_761a5_row4_col1" class="data row4 col1" >536</td>
+      <td id="T_761a5_row4_col2" class="data row4 col2" >3.937991</td>
+    </tr>
+    <tr>
+      <th id="T_761a5_level0_row5" class="row_heading level0 row5" >5</th>
+      <td id="T_761a5_row5_col0" class="data row5 col0" >IL</td>
+      <td id="T_761a5_row5_col1" class="data row5 col1" >310</td>
+      <td id="T_761a5_row5_col2" class="data row5 col2" >2.277570</td>
+    </tr>
+    <tr>
+      <th id="T_761a5_level0_row6" class="row_heading level0 row6" >6</th>
+      <td id="T_761a5_row6_col0" class="data row6 col0" >FL</td>
+      <td id="T_761a5_row6_col1" class="data row6 col1" >298</td>
+      <td id="T_761a5_row6_col2" class="data row6 col2" >2.189406</td>
+    </tr>
+    <tr>
+      <th id="T_761a5_level0_row7" class="row_heading level0 row7" >7</th>
+      <td id="T_761a5_row7_col0" class="data row7 col0" >OH</td>
+      <td id="T_761a5_row7_col1" class="data row7 col1" >290</td>
+      <td id="T_761a5_row7_col2" class="data row7 col2" >2.130630</td>
+    </tr>
+    <tr>
+      <th id="T_761a5_level0_row8" class="row_heading level0 row8" >8</th>
+      <td id="T_761a5_row8_col0" class="data row8 col0" >No Location</td>
+      <td id="T_761a5_row8_col1" class="data row8 col1" >264</td>
+      <td id="T_761a5_row8_col2" class="data row8 col2" >1.939608</td>
+    </tr>
+    <tr>
+      <th id="T_761a5_level0_row9" class="row_heading level0 row9" >9</th>
+      <td id="T_761a5_row9_col0" class="data row9 col0" >MA</td>
+      <td id="T_761a5_row9_col1" class="data row9 col1" >253</td>
+      <td id="T_761a5_row9_col2" class="data row9 col2" >1.858791</td>
+    </tr>
+    <tr>
+      <th id="T_761a5_level0_row10" class="row_heading level0 row10" >10</th>
+      <td id="T_761a5_row10_col0" class="data row10 col0" >VA</td>
+      <td id="T_761a5_row10_col1" class="data row10 col1" >251</td>
+      <td id="T_761a5_row10_col2" class="data row10 col2" >1.844097</td>
+    </tr>
+    <tr>
+      <th id="T_761a5_level0_row11" class="row_heading level0 row11" >11</th>
+      <td id="T_761a5_row11_col0" class="data row11 col0" >PA</td>
+      <td id="T_761a5_row11_col1" class="data row11 col1" >238</td>
+      <td id="T_761a5_row11_col2" class="data row11 col2" >1.748586</td>
+    </tr>
+    <tr>
+      <th id="T_761a5_level0_row12" class="row_heading level0 row12" >12</th>
+      <td id="T_761a5_row12_col0" class="data row12 col0" >MI</td>
+      <td id="T_761a5_row12_col1" class="data row12 col1" >225</td>
+      <td id="T_761a5_row12_col2" class="data row12 col2" >1.653075</td>
+    </tr>
+    <tr>
+      <th id="T_761a5_level0_row13" class="row_heading level0 row13" >13</th>
+      <td id="T_761a5_row13_col0" class="data row13 col0" >DC</td>
+      <td id="T_761a5_row13_col1" class="data row13 col1" >209</td>
+      <td id="T_761a5_row13_col2" class="data row13 col2" >1.535523</td>
+    </tr>
+    <tr>
+      <th id="T_761a5_level0_row14" class="row_heading level0 row14" >14</th>
+      <td id="T_761a5_row14_col0" class="data row14 col0" >GA</td>
+      <td id="T_761a5_row14_col1" class="data row14 col1" >172</td>
+      <td id="T_761a5_row14_col2" class="data row14 col2" >1.263684</td>
+    </tr>
+    <tr>
+      <th id="T_761a5_level0_row15" class="row_heading level0 row15" >15</th>
+      <td id="T_761a5_row15_col0" class="data row15 col0" >NC</td>
+      <td id="T_761a5_row15_col1" class="data row15 col1" >166</td>
+      <td id="T_761a5_row15_col2" class="data row15 col2" >1.219602</td>
+    </tr>
+    <tr>
+      <th id="T_761a5_level0_row16" class="row_heading level0 row16" >16</th>
+      <td id="T_761a5_row16_col0" class="data row16 col0" >NJ</td>
+      <td id="T_761a5_row16_col1" class="data row16 col1" >157</td>
+      <td id="T_761a5_row16_col2" class="data row16 col2" >1.153479</td>
+    </tr>
+    <tr>
+      <th id="T_761a5_level0_row17" class="row_heading level0 row17" >17</th>
+      <td id="T_761a5_row17_col0" class="data row17 col0" >OR</td>
+      <td id="T_761a5_row17_col1" class="data row17 col1" >155</td>
+      <td id="T_761a5_row17_col2" class="data row17 col2" >1.138785</td>
+    </tr>
+    <tr>
+      <th id="T_761a5_level0_row18" class="row_heading level0 row18" >18</th>
+      <td id="T_761a5_row18_col0" class="data row18 col0" >MN</td>
+      <td id="T_761a5_row18_col1" class="data row18 col1" >137</td>
+      <td id="T_761a5_row18_col2" class="data row18 col2" >1.006539</td>
+    </tr>
+    <tr>
+      <th id="T_761a5_level0_row19" class="row_heading level0 row19" >19</th>
+      <td id="T_761a5_row19_col0" class="data row19 col0" >WA</td>
+      <td id="T_761a5_row19_col1" class="data row19 col1" >131</td>
+      <td id="T_761a5_row19_col2" class="data row19 col2" >0.962457</td>
+    </tr>
+    <tr>
+      <th id="T_761a5_level0_row20" class="row_heading level0 row20" >20</th>
+      <td id="T_761a5_row20_col0" class="data row20 col0" >MO</td>
+      <td id="T_761a5_row20_col1" class="data row20 col1" >126</td>
+      <td id="T_761a5_row20_col2" class="data row20 col2" >0.925722</td>
+    </tr>
+    <tr>
+      <th id="T_761a5_level0_row21" class="row_heading level0 row21" >21</th>
+      <td id="T_761a5_row21_col0" class="data row21 col0" >WI</td>
+      <td id="T_761a5_row21_col1" class="data row21 col1" >116</td>
+      <td id="T_761a5_row21_col2" class="data row21 col2" >0.852252</td>
+    </tr>
+    <tr>
+      <th id="T_761a5_level0_row22" class="row_heading level0 row22" >22</th>
+      <td id="T_761a5_row22_col0" class="data row22 col0" >AZ</td>
+      <td id="T_761a5_row22_col1" class="data row22 col1" >113</td>
+      <td id="T_761a5_row22_col2" class="data row22 col2" >0.830211</td>
+    </tr>
+    <tr>
+      <th id="T_761a5_level0_row23" class="row_heading level0 row23" >23</th>
+      <td id="T_761a5_row23_col0" class="data row23 col0" >CO</td>
+      <td id="T_761a5_row23_col1" class="data row23 col1" >106</td>
+      <td id="T_761a5_row23_col2" class="data row23 col2" >0.778782</td>
+    </tr>
+    <tr>
+      <th id="T_761a5_level0_row24" class="row_heading level0 row24" >24</th>
+      <td id="T_761a5_row24_col0" class="data row24 col0" >IN</td>
+      <td id="T_761a5_row24_col1" class="data row24 col1" >87</td>
+      <td id="T_761a5_row24_col2" class="data row24 col2" >0.639189</td>
+    </tr>
+    <tr>
+      <th id="T_761a5_level0_row25" class="row_heading level0 row25" >25</th>
+      <td id="T_761a5_row25_col0" class="data row25 col0" >CT</td>
+      <td id="T_761a5_row25_col1" class="data row25 col1" >83</td>
+      <td id="T_761a5_row25_col2" class="data row25 col2" >0.609801</td>
+    </tr>
+    <tr>
+      <th id="T_761a5_level0_row26" class="row_heading level0 row26" >26</th>
+      <td id="T_761a5_row26_col0" class="data row26 col0" >NV</td>
+      <td id="T_761a5_row26_col1" class="data row26 col1" >82</td>
+      <td id="T_761a5_row26_col2" class="data row26 col2" >0.602454</td>
+    </tr>
+    <tr>
+      <th id="T_761a5_level0_row27" class="row_heading level0 row27" >27</th>
+      <td id="T_761a5_row27_col0" class="data row27 col0" >KY</td>
+      <td id="T_761a5_row27_col1" class="data row27 col1" >66</td>
+      <td id="T_761a5_row27_col2" class="data row27 col2" >0.484902</td>
+    </tr>
+    <tr>
+      <th id="T_761a5_level0_row28" class="row_heading level0 row28" >28</th>
+      <td id="T_761a5_row28_col0" class="data row28 col0" >TN</td>
+      <td id="T_761a5_row28_col1" class="data row28 col1" >65</td>
+      <td id="T_761a5_row28_col2" class="data row28 col2" >0.477555</td>
+    </tr>
+    <tr>
+      <th id="T_761a5_level0_row29" class="row_heading level0 row29" >29</th>
+      <td id="T_761a5_row29_col0" class="data row29 col0" >IA</td>
+      <td id="T_761a5_row29_col1" class="data row29 col1" >64</td>
+      <td id="T_761a5_row29_col2" class="data row29 col2" >0.470208</td>
+    </tr>
+    <tr>
+      <th id="T_761a5_level0_row30" class="row_heading level0 row30" >30</th>
+      <td id="T_761a5_row30_col0" class="data row30 col0" >MD</td>
+      <td id="T_761a5_row30_col1" class="data row30 col1" >60</td>
+      <td id="T_761a5_row30_col2" class="data row30 col2" >0.440820</td>
+    </tr>
+    <tr>
+      <th id="T_761a5_level0_row31" class="row_heading level0 row31" >31</th>
+      <td id="T_761a5_row31_col0" class="data row31 col0" >OK</td>
+      <td id="T_761a5_row31_col1" class="data row31 col1" >53</td>
+      <td id="T_761a5_row31_col2" class="data row31 col2" >0.389391</td>
+    </tr>
+    <tr>
+      <th id="T_761a5_level0_row32" class="row_heading level0 row32" >32</th>
+      <td id="T_761a5_row32_col0" class="data row32 col0" >AL</td>
+      <td id="T_761a5_row32_col1" class="data row32 col1" >50</td>
+      <td id="T_761a5_row32_col2" class="data row32 col2" >0.367350</td>
+    </tr>
+    <tr>
+      <th id="T_761a5_level0_row33" class="row_heading level0 row33" >33</th>
+      <td id="T_761a5_row33_col0" class="data row33 col0" >LA</td>
+      <td id="T_761a5_row33_col1" class="data row33 col1" >27</td>
+      <td id="T_761a5_row33_col2" class="data row33 col2" >0.198369</td>
+    </tr>
+    <tr>
+      <th id="T_761a5_level0_row34" class="row_heading level0 row34" >34</th>
+      <td id="T_761a5_row34_col0" class="data row34 col0" >WV</td>
+      <td id="T_761a5_row34_col1" class="data row34 col1" >22</td>
+      <td id="T_761a5_row34_col2" class="data row34 col2" >0.161634</td>
+    </tr>
+    <tr>
+      <th id="T_761a5_level0_row35" class="row_heading level0 row35" >35</th>
+      <td id="T_761a5_row35_col0" class="data row35 col0" >NE</td>
+      <td id="T_761a5_row35_col1" class="data row35 col1" >22</td>
+      <td id="T_761a5_row35_col2" class="data row35 col2" >0.161634</td>
+    </tr>
+    <tr>
+      <th id="T_761a5_level0_row36" class="row_heading level0 row36" >36</th>
+      <td id="T_761a5_row36_col0" class="data row36 col0" >ID</td>
+      <td id="T_761a5_row36_col1" class="data row36 col1" >22</td>
+      <td id="T_761a5_row36_col2" class="data row36 col2" >0.161634</td>
+    </tr>
+    <tr>
+      <th id="T_761a5_level0_row37" class="row_heading level0 row37" >37</th>
+      <td id="T_761a5_row37_col0" class="data row37 col0" >NH</td>
+      <td id="T_761a5_row37_col1" class="data row37 col1" >18</td>
+      <td id="T_761a5_row37_col2" class="data row37 col2" >0.132246</td>
+    </tr>
+    <tr>
+      <th id="T_761a5_level0_row38" class="row_heading level0 row38" >38</th>
+      <td id="T_761a5_row38_col0" class="data row38 col0" >ND</td>
+      <td id="T_761a5_row38_col1" class="data row38 col1" >17</td>
+      <td id="T_761a5_row38_col2" class="data row38 col2" >0.124899</td>
+    </tr>
+    <tr>
+      <th id="T_761a5_level0_row39" class="row_heading level0 row39" >39</th>
+      <td id="T_761a5_row39_col0" class="data row39 col0" >DE</td>
+      <td id="T_761a5_row39_col1" class="data row39 col1" >14</td>
+      <td id="T_761a5_row39_col2" class="data row39 col2" >0.102858</td>
+    </tr>
+    <tr>
+      <th id="T_761a5_level0_row40" class="row_heading level0 row40" >40</th>
+      <td id="T_761a5_row40_col0" class="data row40 col0" >NM</td>
+      <td id="T_761a5_row40_col1" class="data row40 col1" >11</td>
+      <td id="T_761a5_row40_col2" class="data row40 col2" >0.080817</td>
+    </tr>
+    <tr>
+      <th id="T_761a5_level0_row41" class="row_heading level0 row41" >41</th>
+      <td id="T_761a5_row41_col0" class="data row41 col0" >AR</td>
+      <td id="T_761a5_row41_col1" class="data row41 col1" >10</td>
+      <td id="T_761a5_row41_col2" class="data row41 col2" >0.073470</td>
+    </tr>
+    <tr>
+      <th id="T_761a5_level0_row42" class="row_heading level0 row42" >42</th>
+      <td id="T_761a5_row42_col0" class="data row42 col0" >RI</td>
+      <td id="T_761a5_row42_col1" class="data row42 col1" >8</td>
+      <td id="T_761a5_row42_col2" class="data row42 col2" >0.058776</td>
+    </tr>
+    <tr>
+      <th id="T_761a5_level0_row43" class="row_heading level0 row43" >43</th>
+      <td id="T_761a5_row43_col0" class="data row43 col0" >WY</td>
+      <td id="T_761a5_row43_col1" class="data row43 col1" >7</td>
+      <td id="T_761a5_row43_col2" class="data row43 col2" >0.051429</td>
+    </tr>
+    <tr>
+      <th id="T_761a5_level0_row44" class="row_heading level0 row44" >44</th>
+      <td id="T_761a5_row44_col0" class="data row44 col0" >MT</td>
+      <td id="T_761a5_row44_col1" class="data row44 col1" >7</td>
+      <td id="T_761a5_row44_col2" class="data row44 col2" >0.051429</td>
+    </tr>
+    <tr>
+      <th id="T_761a5_level0_row45" class="row_heading level0 row45" >45</th>
+      <td id="T_761a5_row45_col0" class="data row45 col0" >AK</td>
+      <td id="T_761a5_row45_col1" class="data row45 col1" >7</td>
+      <td id="T_761a5_row45_col2" class="data row45 col2" >0.051429</td>
+    </tr>
+    <tr>
+      <th id="T_761a5_level0_row46" class="row_heading level0 row46" >46</th>
+      <td id="T_761a5_row46_col0" class="data row46 col0" >ME</td>
+      <td id="T_761a5_row46_col1" class="data row46 col1" >4</td>
+      <td id="T_761a5_row46_col2" class="data row46 col2" >0.029388</td>
+    </tr>
+    <tr>
+      <th id="T_761a5_level0_row47" class="row_heading level0 row47" >47</th>
+      <td id="T_761a5_row47_col0" class="data row47 col0" >VT</td>
+      <td id="T_761a5_row47_col1" class="data row47 col1" >3</td>
+      <td id="T_761a5_row47_col2" class="data row47 col2" >0.022041</td>
+    </tr>
+    <tr>
+      <th id="T_761a5_level0_row48" class="row_heading level0 row48" >48</th>
+      <td id="T_761a5_row48_col0" class="data row48 col0" >HI</td>
+      <td id="T_761a5_row48_col1" class="data row48 col1" >2</td>
+      <td id="T_761a5_row48_col2" class="data row48 col2" >0.014694</td>
+    </tr>
+    <tr>
+      <th id="T_761a5_level0_row49" class="row_heading level0 row49" >49</th>
+      <td id="T_761a5_row49_col0" class="data row49 col0" >DR</td>
+      <td id="T_761a5_row49_col1" class="data row49 col1" >1</td>
+      <td id="T_761a5_row49_col2" class="data row49 col2" >0.007347</td>
+    </tr>
+    <tr>
+      <th id="T_761a5_level0_row50" class="row_heading level0 row50" >50</th>
+      <td id="T_761a5_row50_col0" class="data row50 col0" >GR</td>
+      <td id="T_761a5_row50_col1" class="data row50 col1" >1</td>
+      <td id="T_761a5_row50_col2" class="data row50 col2" >0.007347</td>
+    </tr>
+    <tr>
+      <th id="T_761a5_level0_row51" class="row_heading level0 row51" >51</th>
+      <td id="T_761a5_row51_col0" class="data row51 col0" >BL</td>
+      <td id="T_761a5_row51_col1" class="data row51 col1" >1</td>
+      <td id="T_761a5_row51_col2" class="data row51 col2" >0.007347</td>
+    </tr>
+  </tbody>
+</table>
+                    <style type="text/css">
+</style>
+<table id="T_b3d75" style='display:inline'>
+  <caption>Fraudulent</caption>
+  <thead>
+    <tr>
+      <th class="blank level0" >&nbsp;</th>
+      <th id="T_b3d75_level0_col0" class="col_heading level0 col0" >state</th>
+      <th id="T_b3d75_level0_col1" class="col_heading level0 col1" >count</th>
+      <th id="T_b3d75_level0_col2" class="col_heading level0 col2" >percentage</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th id="T_b3d75_level0_row0" class="row_heading level0 row0" >0</th>
+      <td id="T_b3d75_row0_col0" class="data row0 col0" >TX</td>
+      <td id="T_b3d75_row0_col1" class="data row0 col1" >125</td>
+      <td id="T_b3d75_row0_col2" class="data row0 col2" >18.037518</td>
+    </tr>
+    <tr>
+      <th id="T_b3d75_level0_row1" class="row_heading level0 row1" >1</th>
+      <td id="T_b3d75_row1_col0" class="data row1 col0" >CA</td>
+      <td id="T_b3d75_row1_col1" class="data row1 col1" >108</td>
+      <td id="T_b3d75_row1_col2" class="data row1 col2" >15.584416</td>
+    </tr>
+    <tr>
+      <th id="T_b3d75_level0_row2" class="row_heading level0 row2" >2</th>
+      <td id="T_b3d75_row2_col0" class="data row2 col0" >Foreign</td>
+      <td id="T_b3d75_row2_col1" class="data row2 col1" >97</td>
+      <td id="T_b3d75_row2_col2" class="data row2 col2" >13.997114</td>
+    </tr>
+    <tr>
+      <th id="T_b3d75_level0_row3" class="row_heading level0 row3" >3</th>
+      <td id="T_b3d75_row3_col0" class="data row3 col0" >NY</td>
+      <td id="T_b3d75_row3_col1" class="data row3 col1" >56</td>
+      <td id="T_b3d75_row3_col2" class="data row3 col2" >8.080808</td>
+    </tr>
+    <tr>
+      <th id="T_b3d75_level0_row4" class="row_heading level0 row4" >4</th>
+      <td id="T_b3d75_row4_col0" class="data row4 col0" >Domestic</td>
+      <td id="T_b3d75_row4_col1" class="data row4 col1" >48</td>
+      <td id="T_b3d75_row4_col2" class="data row4 col2" >6.926407</td>
+    </tr>
+    <tr>
+      <th id="T_b3d75_level0_row5" class="row_heading level0 row5" >5</th>
+      <td id="T_b3d75_row5_col0" class="data row5 col0" >MD</td>
+      <td id="T_b3d75_row5_col1" class="data row5 col1" >27</td>
+      <td id="T_b3d75_row5_col2" class="data row5 col2" >3.896104</td>
+    </tr>
+    <tr>
+      <th id="T_b3d75_level0_row6" class="row_heading level0 row6" >6</th>
+      <td id="T_b3d75_row6_col0" class="data row6 col0" >FL</td>
+      <td id="T_b3d75_row6_col1" class="data row6 col1" >24</td>
+      <td id="T_b3d75_row6_col2" class="data row6 col2" >3.463203</td>
+    </tr>
+    <tr>
+      <th id="T_b3d75_level0_row7" class="row_heading level0 row7" >7</th>
+      <td id="T_b3d75_row7_col0" class="data row7 col0" >GA</td>
+      <td id="T_b3d75_row7_col1" class="data row7 col1" >17</td>
+      <td id="T_b3d75_row7_col2" class="data row7 col2" >2.453102</td>
+    </tr>
+    <tr>
+      <th id="T_b3d75_level0_row8" class="row_heading level0 row8" >8</th>
+      <td id="T_b3d75_row8_col0" class="data row8 col0" >No Location</td>
+      <td id="T_b3d75_row8_col1" class="data row8 col1" >16</td>
+      <td id="T_b3d75_row8_col2" class="data row8 col2" >2.308802</td>
+    </tr>
+    <tr>
+      <th id="T_b3d75_level0_row9" class="row_heading level0 row9" >9</th>
+      <td id="T_b3d75_row9_col0" class="data row9 col0" >IL</td>
+      <td id="T_b3d75_row9_col1" class="data row9 col1" >16</td>
+      <td id="T_b3d75_row9_col2" class="data row9 col2" >2.308802</td>
+    </tr>
+    <tr>
+      <th id="T_b3d75_level0_row10" class="row_heading level0 row10" >10</th>
+      <td id="T_b3d75_row10_col0" class="data row10 col0" >NC</td>
+      <td id="T_b3d75_row10_col1" class="data row10 col1" >14</td>
+      <td id="T_b3d75_row10_col2" class="data row10 col2" >2.020202</td>
+    </tr>
+    <tr>
+      <th id="T_b3d75_level0_row11" class="row_heading level0 row11" >11</th>
+      <td id="T_b3d75_row11_col0" class="data row11 col0" >OH</td>
+      <td id="T_b3d75_row11_col1" class="data row11 col1" >14</td>
+      <td id="T_b3d75_row11_col2" class="data row11 col2" >2.020202</td>
+    </tr>
+    <tr>
+      <th id="T_b3d75_level0_row12" class="row_heading level0 row12" >12</th>
+      <td id="T_b3d75_row12_col0" class="data row12 col0" >WA</td>
+      <td id="T_b3d75_row12_col1" class="data row12 col1" >11</td>
+      <td id="T_b3d75_row12_col2" class="data row12 col2" >1.587302</td>
+    </tr>
+    <tr>
+      <th id="T_b3d75_level0_row13" class="row_heading level0 row13" >13</th>
+      <td id="T_b3d75_row13_col0" class="data row13 col0" >KY</td>
+      <td id="T_b3d75_row13_col1" class="data row13 col1" >10</td>
+      <td id="T_b3d75_row13_col2" class="data row13 col2" >1.443001</td>
+    </tr>
+    <tr>
+      <th id="T_b3d75_level0_row14" class="row_heading level0 row14" >14</th>
+      <td id="T_b3d75_row14_col0" class="data row14 col0" >PA</td>
+      <td id="T_b3d75_row14_col1" class="data row14 col1" >10</td>
+      <td id="T_b3d75_row14_col2" class="data row14 col2" >1.443001</td>
+    </tr>
+    <tr>
+      <th id="T_b3d75_level0_row15" class="row_heading level0 row15" >15</th>
+      <td id="T_b3d75_row15_col0" class="data row15 col0" >MA</td>
+      <td id="T_b3d75_row15_col1" class="data row15 col1" >9</td>
+      <td id="T_b3d75_row15_col2" class="data row15 col2" >1.298701</td>
+    </tr>
+    <tr>
+      <th id="T_b3d75_level0_row16" class="row_heading level0 row16" >16</th>
+      <td id="T_b3d75_row16_col0" class="data row16 col0" >MI</td>
+      <td id="T_b3d75_row16_col1" class="data row16 col1" >8</td>
+      <td id="T_b3d75_row16_col2" class="data row16 col2" >1.154401</td>
+    </tr>
+    <tr>
+      <th id="T_b3d75_level0_row17" class="row_heading level0 row17" >17</th>
+      <td id="T_b3d75_row17_col0" class="data row17 col0" >IN</td>
+      <td id="T_b3d75_row17_col1" class="data row17 col1" >8</td>
+      <td id="T_b3d75_row17_col2" class="data row17 col2" >1.154401</td>
+    </tr>
+    <tr>
+      <th id="T_b3d75_level0_row18" class="row_heading level0 row18" >18</th>
+      <td id="T_b3d75_row18_col0" class="data row18 col0" >AL</td>
+      <td id="T_b3d75_row18_col1" class="data row18 col1" >7</td>
+      <td id="T_b3d75_row18_col2" class="data row18 col2" >1.010101</td>
+    </tr>
+    <tr>
+      <th id="T_b3d75_level0_row19" class="row_heading level0 row19" >19</th>
+      <td id="T_b3d75_row19_col0" class="data row19 col0" >NV</td>
+      <td id="T_b3d75_row19_col1" class="data row19 col1" >6</td>
+      <td id="T_b3d75_row19_col2" class="data row19 col2" >0.865801</td>
+    </tr>
+    <tr>
+      <th id="T_b3d75_level0_row20" class="row_heading level0 row20" >20</th>
+      <td id="T_b3d75_row20_col0" class="data row20 col0" >DC</td>
+      <td id="T_b3d75_row20_col1" class="data row20 col1" >6</td>
+      <td id="T_b3d75_row20_col2" class="data row20 col2" >0.865801</td>
+    </tr>
+    <tr>
+      <th id="T_b3d75_level0_row21" class="row_heading level0 row21" >21</th>
+      <td id="T_b3d75_row21_col0" class="data row21 col0" >VA</td>
+      <td id="T_b3d75_row21_col1" class="data row21 col1" >6</td>
+      <td id="T_b3d75_row21_col2" class="data row21 col2" >0.865801</td>
+    </tr>
+    <tr>
+      <th id="T_b3d75_level0_row22" class="row_heading level0 row22" >22</th>
+      <td id="T_b3d75_row22_col0" class="data row22 col0" >MO</td>
+      <td id="T_b3d75_row22_col1" class="data row22 col1" >5</td>
+      <td id="T_b3d75_row22_col2" class="data row22 col2" >0.721501</td>
+    </tr>
+    <tr>
+      <th id="T_b3d75_level0_row23" class="row_heading level0 row23" >23</th>
+      <td id="T_b3d75_row23_col0" class="data row23 col0" >NE</td>
+      <td id="T_b3d75_row23_col1" class="data row23 col1" >4</td>
+      <td id="T_b3d75_row23_col2" class="data row23 col2" >0.577201</td>
+    </tr>
+    <tr>
+      <th id="T_b3d75_level0_row24" class="row_heading level0 row24" >24</th>
+      <td id="T_b3d75_row24_col0" class="data row24 col0" >CT</td>
+      <td id="T_b3d75_row24_col1" class="data row24 col1" >4</td>
+      <td id="T_b3d75_row24_col2" class="data row24 col2" >0.577201</td>
+    </tr>
+    <tr>
+      <th id="T_b3d75_level0_row25" class="row_heading level0 row25" >25</th>
+      <td id="T_b3d75_row25_col0" class="data row25 col0" >CO</td>
+      <td id="T_b3d75_row25_col1" class="data row25 col1" >4</td>
+      <td id="T_b3d75_row25_col2" class="data row25 col2" >0.577201</td>
+    </tr>
+    <tr>
+      <th id="T_b3d75_level0_row26" class="row_heading level0 row26" >26</th>
+      <td id="T_b3d75_row26_col0" class="data row26 col0" >WI</td>
+      <td id="T_b3d75_row26_col1" class="data row26 col1" >4</td>
+      <td id="T_b3d75_row26_col2" class="data row26 col2" >0.577201</td>
+    </tr>
+    <tr>
+      <th id="T_b3d75_level0_row27" class="row_heading level0 row27" >27</th>
+      <td id="T_b3d75_row27_col0" class="data row27 col0" >AZ</td>
+      <td id="T_b3d75_row27_col1" class="data row27 col1" >3</td>
+      <td id="T_b3d75_row27_col2" class="data row27 col2" >0.432900</td>
+    </tr>
+    <tr>
+      <th id="T_b3d75_level0_row28" class="row_heading level0 row28" >28</th>
+      <td id="T_b3d75_row28_col0" class="data row28 col0" >MN</td>
+      <td id="T_b3d75_row28_col1" class="data row28 col1" >3</td>
+      <td id="T_b3d75_row28_col2" class="data row28 col2" >0.432900</td>
+    </tr>
+    <tr>
+      <th id="T_b3d75_level0_row29" class="row_heading level0 row29" >29</th>
+      <td id="T_b3d75_row29_col0" class="data row29 col0" >NJ</td>
+      <td id="T_b3d75_row29_col1" class="data row29 col1" >3</td>
+      <td id="T_b3d75_row29_col2" class="data row29 col2" >0.432900</td>
+    </tr>
+    <tr>
+      <th id="T_b3d75_level0_row30" class="row_heading level0 row30" >30</th>
+      <td id="T_b3d75_row30_col0" class="data row30 col0" >LA</td>
+      <td id="T_b3d75_row30_col1" class="data row30 col1" >2</td>
+      <td id="T_b3d75_row30_col2" class="data row30 col2" >0.288600</td>
+    </tr>
+    <tr>
+      <th id="T_b3d75_level0_row31" class="row_heading level0 row31" >31</th>
+      <td id="T_b3d75_row31_col0" class="data row31 col0" >AK</td>
+      <td id="T_b3d75_row31_col1" class="data row31 col1" >2</td>
+      <td id="T_b3d75_row31_col2" class="data row31 col2" >0.288600</td>
+    </tr>
+    <tr>
+      <th id="T_b3d75_level0_row32" class="row_heading level0 row32" >32</th>
+      <td id="T_b3d75_row32_col0" class="data row32 col0" >ND</td>
+      <td id="T_b3d75_row32_col1" class="data row32 col1" >2</td>
+      <td id="T_b3d75_row32_col2" class="data row32 col2" >0.288600</td>
+    </tr>
+    <tr>
+      <th id="T_b3d75_level0_row33" class="row_heading level0 row33" >33</th>
+      <td id="T_b3d75_row33_col0" class="data row33 col0" >TN</td>
+      <td id="T_b3d75_row33_col1" class="data row33 col1" >2</td>
+      <td id="T_b3d75_row33_col2" class="data row33 col2" >0.288600</td>
+    </tr>
+    <tr>
+      <th id="T_b3d75_level0_row34" class="row_heading level0 row34" >34</th>
+      <td id="T_b3d75_row34_col0" class="data row34 col0" >HI</td>
+      <td id="T_b3d75_row34_col1" class="data row34 col1" >2</td>
+      <td id="T_b3d75_row34_col2" class="data row34 col2" >0.288600</td>
+    </tr>
+    <tr>
+      <th id="T_b3d75_level0_row35" class="row_heading level0 row35" >35</th>
+      <td id="T_b3d75_row35_col0" class="data row35 col0" >IA</td>
+      <td id="T_b3d75_row35_col1" class="data row35 col1" >2</td>
+      <td id="T_b3d75_row35_col2" class="data row35 col2" >0.288600</td>
+    </tr>
+    <tr>
+      <th id="T_b3d75_level0_row36" class="row_heading level0 row36" >36</th>
+      <td id="T_b3d75_row36_col0" class="data row36 col0" >OR</td>
+      <td id="T_b3d75_row36_col1" class="data row36 col1" >1</td>
+      <td id="T_b3d75_row36_col2" class="data row36 col2" >0.144300</td>
+    </tr>
+    <tr>
+      <th id="T_b3d75_level0_row37" class="row_heading level0 row37" >37</th>
+      <td id="T_b3d75_row37_col0" class="data row37 col0" >MT</td>
+      <td id="T_b3d75_row37_col1" class="data row37 col1" >1</td>
+      <td id="T_b3d75_row37_col2" class="data row37 col2" >0.144300</td>
+    </tr>
+    <tr>
+      <th id="T_b3d75_level0_row38" class="row_heading level0 row38" >38</th>
+      <td id="T_b3d75_row38_col0" class="data row38 col0" >NH</td>
+      <td id="T_b3d75_row38_col1" class="data row38 col1" >1</td>
+      <td id="T_b3d75_row38_col2" class="data row38 col2" >0.144300</td>
+    </tr>
+    <tr>
+      <th id="T_b3d75_level0_row39" class="row_heading level0 row39" >39</th>
+      <td id="T_b3d75_row39_col0" class="data row39 col0" >ID</td>
+      <td id="T_b3d75_row39_col1" class="data row39 col1" >1</td>
+      <td id="T_b3d75_row39_col2" class="data row39 col2" >0.144300</td>
+    </tr>
+    <tr>
+      <th id="T_b3d75_level0_row40" class="row_heading level0 row40" >40</th>
+      <td id="T_b3d75_row40_col0" class="data row40 col0" >RI</td>
+      <td id="T_b3d75_row40_col1" class="data row40 col1" >1</td>
+      <td id="T_b3d75_row40_col2" class="data row40 col2" >0.144300</td>
+    </tr>
+    <tr>
+      <th id="T_b3d75_level0_row41" class="row_heading level0 row41" >41</th>
+      <td id="T_b3d75_row41_col0" class="data row41 col0" >AT</td>
+      <td id="T_b3d75_row41_col1" class="data row41 col1" >1</td>
+      <td id="T_b3d75_row41_col2" class="data row41 col2" >0.144300</td>
+    </tr>
+    <tr>
+      <th id="T_b3d75_level0_row42" class="row_heading level0 row42" >42</th>
+      <td id="T_b3d75_row42_col0" class="data row42 col0" >ME</td>
+      <td id="T_b3d75_row42_col1" class="data row42 col1" >1</td>
+      <td id="T_b3d75_row42_col2" class="data row42 col2" >0.144300</td>
+    </tr>
+    <tr>
+      <th id="T_b3d75_level0_row43" class="row_heading level0 row43" >43</th>
+      <td id="T_b3d75_row43_col0" class="data row43 col0" >DE</td>
+      <td id="T_b3d75_row43_col1" class="data row43 col1" >1</td>
+      <td id="T_b3d75_row43_col2" class="data row43 col2" >0.144300</td>
+    </tr>
+  </tbody>
+</table>
+                    </div></div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>x = [1,2,3]
-x.pop()
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>f_sorted_df = f_combined_data.sort_values(&#39;percentage&#39;)
+f_sorted_df = f_sorted_df[f_sorted_df[&#39;percentage&#39;] &gt; 1]
+x1 = f_sorted_df[&#39;state&#39;]
+y1 = f_sorted_df[&#39;percentage&#39;]
+
+nf_sorted_df = nf_combined_data.sort_values(&#39;percentage&#39;)
+nf_sorted_df = nf_sorted_df[nf_sorted_df[&#39;percentage&#39;] &gt; 1]
+x2 = nf_sorted_df[&#39;state&#39;]
+y2 = nf_sorted_df[&#39;percentage&#39;]
+
+fig, axes = plt.subplots(nrows=1, ncols=2, figsize=(10, 5))
+
+axes[0].barh(x2,y2)
+axes[0].set_xlabel(&quot;Percentage&quot;, size=12)
+axes[0].set_ylabel(&quot;State&quot;, size=12)
+axes[0].set_title(&quot;Percent Distribution of State of Non-Fraudulent Posting&quot;, size=13)
+
+axes[1].barh(x1,y1)
+axes[1].set_xlabel(&quot;Percentage&quot;, size=12)
+axes[1].set_ylabel(&quot;State&quot;, size=12)
+axes[1].set_title(&quot;Percent Distribution of State of Fraudulent Posting&quot;, size=13)
+
+fig.tight_layout()
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>3
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>x
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[1, 2]
-</pre></div>
+<img alt="_images/PF_14_0.png" src="_images/PF_14_0.png" />
 </div>
 </div>
 </div>
