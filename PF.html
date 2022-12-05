@@ -51,7 +51,7 @@
     <script async="async" src="_static/sphinx-thebe.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Feature Selection" href="featureselection.html" />
+    <link rel="next" title="One Hot Encoding Of The Categorical Variables" href="OHE.html" />
     <link rel="prev" title="Creating Features from the Description" href="FT.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
@@ -149,11 +149,21 @@
      Creating Features Through Investigation
     </a>
    </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="OHE.html">
+     One Hot Encoding Of The Categorical Variables
+    </a>
+   </li>
   </ul>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="featureselection.html">
    Feature Selection
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="Pipeline.html">
+   Creating Pipeline
   </a>
  </li>
 </ul>
@@ -339,7 +349,7 @@
 Let’s start with some simple hypothesis and investigate whether we can use our hypothesis to create a new feature.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>This page corresponds to the “Power Feature” part of the original project. I will revise and fix some errors in the original project on this page and add new investigations for more features.</p>
+<p>This page corresponds to the “Power Feature” part of the original project. I will revise and fix some errors in the original project and add new investigations for more features.</p>
 </div>
 <div class="section" id="first-investigation-relationship-between-location-and-fraudulent-posting">
 <h2>First Investigation: Relationship Between Location and Fraudulent Posting<a class="headerlink" href="#first-investigation-relationship-between-location-and-fraudulent-posting" title="Permalink to this headline">¶</a></h2>
@@ -919,6 +929,196 @@ fig.tight_layout()
 </div>
 <div class="section" id="second-investigation-relationship-between-nas-and-fraudulent-posting">
 <h2>Second Investigation: Relationship between NAs and Fraudulent Posting<a class="headerlink" href="#second-investigation-relationship-between-nas-and-fraudulent-posting" title="Permalink to this headline">¶</a></h2>
+<p>Before we proceed with the categorical variables, we must impute all NA values. However, some of these categorical variables may require a unique imputation to become a better feature.</p>
+<p>The hypothesis we will explore in this section is that <strong>the presence of NAs has more predictive power for some columns than other categorical values.</strong> For example, many fraudulent job postings have a high chance of not including their company information to increase their chance of tricking people. If this hypothesis is confirmed, we can binarize those columns to NA and NOT_NA instead of one-hot-encoding all values. This way will reduce our computation costs and increase its predictive power.</p>
+<p>Let’s make a table so that we can validate our hypothesis.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>train_fraudulent = train_data[train_data[&#39;fraudulent&#39;] == 1]
+train_non_fraudulent = train_data[train_data[&#39;fraudulent&#39;] == 0]
+
+percent_missing = train_data.isnull().sum() * 100 / len(train_data)
+percent_missing_f = train_fraudulent.isnull().sum() * 100 / len(train_fraudulent)
+percent_missing_nf = train_non_fraudulent.isnull().sum() * 100 / len(train_non_fraudulent)
+NA_diff = abs(percent_missing_f - percent_missing_nf)
+
+missing_value_data = pd.DataFrame({&#39;Total NA %&#39;: percent_missing , 
+                                   &#39;Fraudulent NA %&#39;: percent_missing_f , 
+                                   &#39;Non Fraudulent NA %&#39;: percent_missing_nf,
+                                  &#39;Difference&#39;: NA_diff })
+missing_value_data.sort_values(&#39;Total NA %&#39;, inplace=True, ascending = False)
+missing_value_data[missing_value_data[&#39;Total NA %&#39;] &gt; 0]
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Total NA %</th>
+      <th>Fraudulent NA %</th>
+      <th>Non Fraudulent NA %</th>
+      <th>Difference</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>salary_range</th>
+      <td>84.039430</td>
+      <td>74.458874</td>
+      <td>84.527221</td>
+      <td>10.068346</td>
+    </tr>
+    <tr>
+      <th>department</th>
+      <td>64.842002</td>
+      <td>62.626263</td>
+      <td>64.954816</td>
+      <td>2.328553</td>
+    </tr>
+    <tr>
+      <th>required_education</th>
+      <td>45.434843</td>
+      <td>53.535354</td>
+      <td>45.022408</td>
+      <td>8.512945</td>
+    </tr>
+    <tr>
+      <th>benefits</th>
+      <td>40.555089</td>
+      <td>43.001443</td>
+      <td>40.430534</td>
+      <td>2.570909</td>
+    </tr>
+    <tr>
+      <th>required_experience</th>
+      <td>39.674217</td>
+      <td>50.937951</td>
+      <td>39.100727</td>
+      <td>11.837224</td>
+    </tr>
+    <tr>
+      <th>function</th>
+      <td>36.136745</td>
+      <td>39.393939</td>
+      <td>35.970906</td>
+      <td>3.423034</td>
+    </tr>
+    <tr>
+      <th>industry</th>
+      <td>27.446868</td>
+      <td>32.611833</td>
+      <td>27.183895</td>
+      <td>5.427937</td>
+    </tr>
+    <tr>
+      <th>employment_type</th>
+      <td>19.274329</td>
+      <td>28.427128</td>
+      <td>18.808317</td>
+      <td>9.618812</td>
+    </tr>
+    <tr>
+      <th>company_profile</th>
+      <td>18.680089</td>
+      <td>69.841270</td>
+      <td>16.075233</td>
+      <td>53.766037</td>
+    </tr>
+    <tr>
+      <th>requirements</th>
+      <td>14.904922</td>
+      <td>17.460317</td>
+      <td>14.774814</td>
+      <td>2.685503</td>
+    </tr>
+    <tr>
+      <th>location</th>
+      <td>1.957494</td>
+      <td>2.308802</td>
+      <td>1.939608</td>
+      <td>0.369195</td>
+    </tr>
+    <tr>
+      <th>description</th>
+      <td>0.006991</td>
+      <td>0.144300</td>
+      <td>0.000000</td>
+      <td>0.144300</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<p>The table above clearly gives us several important insights:</p>
+<ol class="simple">
+<li><p><strong>The column <code class="docutils literal notranslate"><span class="pre">company_profile</span></code>’s colossal difference (54%) implies that most of the NAs in <code class="docutils literal notranslate"><span class="pre">company</span> <span class="pre">profile</span></code> are from fraudulent postings; therefore, the presence of NA in <code class="docutils literal notranslate"><span class="pre">company_profile</span></code> can serve as a great feature.</strong> The <code class="docutils literal notranslate"><span class="pre">compant_profile</span></code> will be binarized to be served as a feature  (1 = NA, 0 = NON-NA).</p></li>
+<li><p><strong>Also, some columns demonstrated meaningful differences: <code class="docutils literal notranslate"><span class="pre">salary_range</span></code>, <code class="docutils literal notranslate"><span class="pre">required_education</span></code>, <code class="docutils literal notranslate"><span class="pre">required_experience</span></code>, and <code class="docutils literal notranslate"><span class="pre">employment_type</span></code>.</strong> Since those differences are not dramatic as <code class="docutils literal notranslate"><span class="pre">company</span> <span class="pre">profile</span></code>, we need to consider a trade-off between computational cost and accuracy when we decide whether or not we need binarization. Let’s take a look at these columns.</p></li>
+</ol>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">required_experience</span></code> and <code class="docutils literal notranslate"><span class="pre">employment_type</span></code> contains few factors, so the cost of using OHE is not expensive. We don’t need binarization.</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">train_data</span><span class="p">[</span><span class="s1">&#39;required_experience&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span>
+
+<span class="n">Mid</span><span class="o">-</span><span class="n">Senior</span> <span class="n">level</span>    <span class="mi">3011</span>
+<span class="n">Entry</span> <span class="n">level</span>         <span class="mi">2177</span>
+<span class="n">Associate</span>           <span class="mi">1832</span>
+<span class="n">Not</span> <span class="n">Applicable</span>       <span class="mi">884</span>
+<span class="n">Director</span>             <span class="mi">314</span>
+<span class="n">Internship</span>           <span class="mi">301</span>
+<span class="n">Executive</span>            <span class="mi">110</span>
+<span class="n">Name</span><span class="p">:</span> <span class="n">required_experience</span><span class="p">,</span> <span class="n">dtype</span><span class="p">:</span> <span class="n">int64</span>
+
+<span class="n">train_data</span><span class="p">[</span><span class="s1">&#39;employment_type&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span>
+
+<span class="n">Full</span><span class="o">-</span><span class="n">time</span>    <span class="mi">9306</span>
+<span class="n">Contract</span>     <span class="mi">1224</span>
+<span class="n">Part</span><span class="o">-</span><span class="n">time</span>     <span class="mi">626</span>
+<span class="n">Temporary</span>     <span class="mi">200</span>
+<span class="n">Other</span>         <span class="mi">191</span>
+<span class="n">Name</span><span class="p">:</span> <span class="n">employment_type</span><span class="p">,</span> <span class="n">dtype</span><span class="p">:</span> <span class="n">int64</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>However, <code class="docutils literal notranslate"><span class="pre">required_education</span></code> contains 13 factors, and the cost of using OHE is more pricy. We will binarize this column to reduce our computational cost.</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">train_data</span><span class="p">[</span><span class="s1">&#39;required_education&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span>
+
+<span class="n">Bachelors</span> <span class="n">Degree</span>                     <span class="mi">4116</span>
+<span class="n">High</span> <span class="n">School</span> <span class="ow">or</span> <span class="n">equivalent</span>            <span class="mi">1650</span>
+<span class="n">Unspecified</span>                          <span class="mi">1095</span>
+<span class="n">Masters</span> <span class="n">Degree</span>                        <span class="mi">339</span>
+<span class="n">Associate</span> <span class="n">Degree</span>                      <span class="mi">227</span>
+<span class="n">Certification</span>                         <span class="mi">148</span>
+<span class="n">Some</span> <span class="n">College</span> <span class="n">Coursework</span> <span class="n">Completed</span>      <span class="mi">78</span>
+<span class="n">Professional</span>                           <span class="mi">57</span>
+<span class="n">Vocational</span>                             <span class="mi">38</span>
+<span class="n">Some</span> <span class="n">High</span> <span class="n">School</span> <span class="n">Coursework</span>            <span class="mi">24</span>
+<span class="n">Doctorate</span>                              <span class="mi">20</span>
+<span class="n">Vocational</span> <span class="o">-</span> <span class="n">HS</span> <span class="n">Diploma</span>                 <span class="mi">8</span>
+<span class="n">Vocational</span> <span class="o">-</span> <span class="n">Degree</span>                     <span class="mi">5</span>
+<span class="n">Name</span><span class="p">:</span> <span class="n">required_education</span><span class="p">,</span> <span class="n">dtype</span><span class="p">:</span> <span class="n">int64</span>
+</pre></div>
+</div>
+<ol class="simple">
+<li><p><strong>Some columns in the dataset contain too many NAs, which makes the column useless.</strong> For example, <code class="docutils literal notranslate"><span class="pre">salary_range</span></code> and <code class="docutils literal notranslate"><span class="pre">department</span></code> have more than 50% of NA, making the column unusable. We will eliminate those columns in the feature selection section.</p></li>
+</ol>
+<p><strong>In conclusion, the table supports our hypothesis, and we could improve <code class="docutils literal notranslate"><span class="pre">company_profile</span></code> and <code class="docutils literal notranslate"><span class="pre">required_education</span></code> into a much more powerful feature.</strong></p>
 </div>
 </div>
 
@@ -954,10 +1154,10 @@ fig.tight_layout()
             <p class="prev-next-title">Creating Features from the Description</p>
         </div>
     </a>
-    <a class='right-next' id="next-link" href="featureselection.html" title="next page">
+    <a class='right-next' id="next-link" href="OHE.html" title="next page">
     <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Feature Selection</p>
+        <p class="prev-next-title">One Hot Encoding Of The Categorical Variables</p>
     </div>
     <i class="fas fa-angle-right"></i>
     </a>
