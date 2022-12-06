@@ -291,11 +291,9 @@
   <div class="tex2jax_ignore mathjax_ignore section" id="summary">
 <h1>Summary<a class="headerlink" href="#summary" title="Permalink to this headline">¶</a></h1>
 <p>This is a summary of how we will preprocess each column in the dataset. You can find the complete coding of this preprocessing <a class="reference internal" href="Pipeline.html"><span class="doc std std-doc">here</span></a>.</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-output docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import pandas as pd 
-train_data = pd.read_csv(&quot;./data/train_set.csv&quot;)
-train_data.head()
 </pre></div>
 </div>
 </div>
@@ -304,13 +302,179 @@ train_data.head()
 <span class="ne">ModuleNotFoundError</span><span class="g g-Whitespace">                       </span>Traceback (most recent call last)
 <span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">line</span> <span class="mi">1</span>
 <span class="ne">----&gt; </span><span class="mi">1</span> <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span> 
-<span class="g g-Whitespace">      </span><span class="mi">2</span> <span class="n">train_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;./data/train_set.csv&quot;</span><span class="p">)</span>
-<span class="g g-Whitespace">      </span><span class="mi">3</span> <span class="n">train_data</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 
 <span class="ne">ModuleNotFoundError</span>: No module named &#39;pandas&#39;
 </pre></div>
 </div>
 </div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>train_data = pd.read_csv(&quot;./data/train_set.csv&quot;)
+train_data.head()
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Unnamed: 0.1</th>
+      <th>Unnamed: 0</th>
+      <th>job_id</th>
+      <th>title</th>
+      <th>location</th>
+      <th>department</th>
+      <th>salary_range</th>
+      <th>company_profile</th>
+      <th>description</th>
+      <th>requirements</th>
+      <th>benefits</th>
+      <th>telecommuting</th>
+      <th>has_company_logo</th>
+      <th>has_questions</th>
+      <th>employment_type</th>
+      <th>required_experience</th>
+      <th>required_education</th>
+      <th>industry</th>
+      <th>function</th>
+      <th>fraudulent</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>0</td>
+      <td>7530</td>
+      <td>7531</td>
+      <td>Contact Center Representatives</td>
+      <td>US, VA, Virginia Beach</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>Tidewater Finance Co. was established in 1992 ...</td>
+      <td>tidewat financ compani locat virginia beach va...</td>
+      <td>The position requires the following qualificat...</td>
+      <td>Our company offers a competitive salary plus B...</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>Full-time</td>
+      <td>Entry level</td>
+      <td>Unspecified</td>
+      <td>Financial Services</td>
+      <td>Customer Service</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>1</td>
+      <td>129</td>
+      <td>130</td>
+      <td>Customer Service Associate</td>
+      <td>US, TX, Dallas</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>Novitex Enterprise Solutions, formerly Pitney ...</td>
+      <td>custom servic associ base dalla tx right candi...</td>
+      <td>QualificationsMinimum of 1 year customer servi...</td>
+      <td>NaN</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>Full-time</td>
+      <td>Entry level</td>
+      <td>High School or equivalent</td>
+      <td>Telecommunications</td>
+      <td>Customer Service</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>2</td>
+      <td>4640</td>
+      <td>4641</td>
+      <td>Automated Test Analyst</td>
+      <td>NZ, , Auckland</td>
+      <td>Permanent</td>
+      <td>NaN</td>
+      <td>SilverStripe CMS &amp;amp; Framework is an open so...</td>
+      <td>look dedic passion softwar test analyst team p...</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0</td>
+      <td>1</td>
+      <td>1</td>
+      <td>Full-time</td>
+      <td>Mid-Senior level</td>
+      <td>NaN</td>
+      <td>Information Technology and Services</td>
+      <td>NaN</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>3</td>
+      <td>402</td>
+      <td>403</td>
+      <td>Inside Sales Professional-Omaha</td>
+      <td>US, NE, Omaha</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>ABC Supply Co., Inc. is the nation’s largest w...</td>
+      <td>sale repres provid assist custom purchas mater...</td>
+      <td>As a Sales Representative, you must have the a...</td>
+      <td>Your benefits package as a Sales Representativ...</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>Full-time</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>Building Materials</td>
+      <td>Sales</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>4</td>
+      <td>13218</td>
+      <td>13219</td>
+      <td>Content Marketing/SEO Manager</td>
+      <td>US, CA, Los Angeles</td>
+      <td>Marketing</td>
+      <td>NaN</td>
+      <td>MeUndies is a lifestyle brand that is transfor...</td>
+      <td>meundi lifestyl brand transform way peopl perc...</td>
+      <td>REQUIREMENTS/QUALIFICATIONS/PERSONAL ATTRIBUTE...</td>
+      <td>WHY MEUNDIES?We're a fast-growing, VC-backed c...</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>Full-time</td>
+      <td>Mid-Senior level</td>
+      <td>Bachelor's Degree</td>
+      <td>Internet</td>
+      <td>Marketing</td>
+      <td>0</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
 </div>
 <ol class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">job_id</span></code> : Eliminated.</p></li>
