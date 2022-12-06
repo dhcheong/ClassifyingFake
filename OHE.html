@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>One Hot Encoding Of The Categorical Variables &#8212; Classifying Fake Job Posting Using Machine Learning Algorithm</title>
+    <title>Label Encoding Vs. One Hot Encoding &#8212; Classifying Fake Job Posting Using Machine Learning Algorithm</title>
     
   <link href="_static/css/theme.css" rel="stylesheet">
   <link href="_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
@@ -51,7 +51,7 @@
     <script async="async" src="_static/sphinx-thebe.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Feature Selection" href="featureselection.html" />
+    <link rel="next" title="Summary" href="summary.html" />
     <link rel="prev" title="Creating Features Through Investigation" href="PF.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
@@ -151,7 +151,12 @@
    </li>
    <li class="toctree-l2 current active">
     <a class="current reference internal" href="#">
-     One Hot Encoding Of The Categorical Variables
+     Label Encoding Vs. One Hot Encoding
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="summary.html">
+     Summary
     </a>
    </li>
   </ul>
@@ -265,6 +270,34 @@
         <!-- Table of contents -->
         <div class="d-none d-md-block col-md-2 bd-toc show noprint">
             
+            <div class="tocsection onthispage pt-5 pb-3">
+                <i class="fas fa-list"></i> Contents
+            </div>
+            <nav id="bd-toc-nav" aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#label-encoding">
+   Label encoding
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#one-hot-encoding">
+   One Hot Encoding
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#example-one-hot-encode-of-the-column-function">
+   Example: One Hot Encode of the column
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     function
+    </span>
+   </code>
+  </a>
+ </li>
+</ul>
+
+            </nav>
         </div>
     </div>
 </div>
@@ -272,19 +305,399 @@
         <div class="col-12 col-md-9 pl-md-3 pr-md-0">
             <!-- Table of contents that is only displayed when printing the page -->
             <div id="jb-print-docs-body" class="onlyprint">
-                <h1>One Hot Encoding Of The Categorical Variables</h1>
+                <h1>Label Encoding Vs. One Hot Encoding</h1>
                 <!-- Table of contents -->
                 <div id="print-main-content">
                     <div id="jb-print-toc">
                         
+                        <div>
+                            <h2> Contents </h2>
+                        </div>
+                        <nav aria-label="Page">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#label-encoding">
+   Label encoding
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#one-hot-encoding">
+   One Hot Encoding
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#example-one-hot-encode-of-the-column-function">
+   Example: One Hot Encode of the column
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     function
+    </span>
+   </code>
+  </a>
+ </li>
+</ul>
+
+                        </nav>
                     </div>
                 </div>
             </div>
             
               <div>
                 
-  <div class="tex2jax_ignore mathjax_ignore section" id="one-hot-encoding-of-the-categorical-variables">
-<h1>One Hot Encoding Of The Categorical Variables<a class="headerlink" href="#one-hot-encoding-of-the-categorical-variables" title="Permalink to this headline">¶</a></h1>
+  <div class="tex2jax_ignore mathjax_ignore section" id="label-encoding-vs-one-hot-encoding">
+<h1>Label Encoding Vs. One Hot Encoding<a class="headerlink" href="#label-encoding-vs-one-hot-encoding" title="Permalink to this headline">¶</a></h1>
+<p>Label encoding and one-hot-encoding are two popular ways to process categorical variables in the dataset. The step is required for machine learning analysis because many algorithms are not compatible with categorical data. These two methods have their pro and con, so we need to choose the most suitable one for our dataset.</p>
+<div class="section" id="label-encoding">
+<h2>Label encoding<a class="headerlink" href="#label-encoding" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Label encoding assigns an integer to each categorical value based on alphabetical order.</p></li>
+<li><p><strong>Pro:</strong> Label encoding has a significantly lower computational cost. We don’t need to modify the dimension of a matrix.</p></li>
+<li><p><strong>Con:</strong> Label encoding create unnecessary ranking between categorical values. For example, if the number 1 is assigned to “doctor” and the number 2 is assigned to “intern”, it means that the intern is twice more important as the doctor. The problem gets severe as we have more categorical values.</p></li>
+<li><p><strong>Label encoding can be useful if the categorical values are ordinal</strong>. For example, if we have ordinal categorical values such as, Not Satisfied, Satisfied, and Highly Satisfied, assigning numbers to those levels will not be a big problem. However, this still makes our analysis and interpretation harder: for example,  if the number 1 is assigned to “Not Satisfied” and the number 3 is assigned to “Highly Satisfy”, how do we know that “Highly Satisfy” is three times more important than “Not Satisfied”?</p></li>
+</ul>
+</div>
+<div class="section" id="one-hot-encoding">
+<h2>One Hot Encoding<a class="headerlink" href="#one-hot-encoding" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>One Hot Encoding creates dummy variables using 0 and 1 to represent the categorical values.</p></li>
+<li><p><strong>Pro:</strong> It is a more straightforward way of representing categorical values. Also, it does not make any ranking between variables, so it works with any categorical variable. For a random forest model, using OHE also can make the model simpler (more generalized) and better. For example, let’s say I label encode the sex feature (male:1, female:2, other:3). Then when the tree needs to choose female, the tree needs two branches: a branch that selects bigger than 0 and a branch that selects less than 3. Using OHE, the tree only needs one branch that selects 1 in the column female.</p></li>
+<li><p><strong>Con:</strong> Using One Hot Encoding can be computationally costly since we are creating several dummies. Using OHE can result in creating a larger and more sparse feature matrix.</p></li>
+</ul>
+<p><strong>For our dataset, I will use One-Hot-Encoding instead of Lable Encoding because of two reasons:</strong></p>
+<ol class="simple">
+<li><p>All of the categorical columns we have in the dataset are not ordinal. Although we have lots of categorical values in the columns like <code class="docutils literal notranslate"><span class="pre">function</span></code>, I think it would make a better result if we use OHE and then we select the features to reduce the dimension.</p></li>
+<li><p>For this project, I want to enhance the performance of the random forest model. Using OHE instead of label encoding will maximize the regularization effect by generalizing the random forest model.</p></li>
+</ol>
+</div>
+<div class="section" id="example-one-hot-encode-of-the-column-function">
+<h2>Example: One Hot Encode of the column <code class="docutils literal notranslate"><span class="pre">function</span></code><a class="headerlink" href="#example-one-hot-encode-of-the-column-function" title="Permalink to this headline">¶</a></h2>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from sklearn.preprocessing import OneHotEncoder
+import pandas as pd 
+import pickle
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
+<span class="ne">ModuleNotFoundError</span><span class="g g-Whitespace">                       </span>Traceback (most recent call last)
+<span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">line</span> <span class="mi">1</span>
+<span class="ne">----&gt; </span><span class="mi">1</span> <span class="kn">from</span> <span class="nn">sklearn.preprocessing</span> <span class="kn">import</span> <span class="n">OneHotEncoder</span>
+<span class="g g-Whitespace">      </span><span class="mi">2</span> <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span> 
+<span class="g g-Whitespace">      </span><span class="mi">3</span> <span class="kn">import</span> <span class="nn">pickle</span>
+
+<span class="ne">ModuleNotFoundError</span>: No module named &#39;sklearn&#39;
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>train_data = pd.read_csv(&quot;./data/train_set.csv&quot;)
+train_data[&quot;function&quot;].fillna(&quot;NAN&quot;, inplace = True)
+encoder = OneHotEncoder()
+encode_function = encoder.fit_transform(train_data[[&#39;function&#39;]])
+feature_name = encoder.get_feature_names_out()
+encoder_df = pd.DataFrame(encode_function.toarray(), columns = feature_name)
+encoder_df.head(10)
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>function_Accounting/Auditing</th>
+      <th>function_Administrative</th>
+      <th>function_Advertising</th>
+      <th>function_Art/Creative</th>
+      <th>function_Business Analyst</th>
+      <th>function_Business Development</th>
+      <th>function_Consulting</th>
+      <th>function_Customer Service</th>
+      <th>function_Data Analyst</th>
+      <th>function_Design</th>
+      <th>...</th>
+      <th>function_Public Relations</th>
+      <th>function_Purchasing</th>
+      <th>function_Quality Assurance</th>
+      <th>function_Research</th>
+      <th>function_Sales</th>
+      <th>function_Science</th>
+      <th>function_Strategy/Planning</th>
+      <th>function_Supply Chain</th>
+      <th>function_Training</th>
+      <th>function_Writing/Editing</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+    </tr>
+  </tbody>
+</table>
+<p>10 rows × 38 columns</p>
+</div></div></div>
+</div>
+<p>We will save the encoder as a pickle so that we can use the same encoder to test set.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;./pickle/function_encode.pkl&#39;</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">encoder</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
 </div>
 
     <script type="text/x-thebe-config">
@@ -319,10 +732,10 @@
             <p class="prev-next-title">Creating Features Through Investigation</p>
         </div>
     </a>
-    <a class='right-next' id="next-link" href="featureselection.html" title="next page">
+    <a class='right-next' id="next-link" href="summary.html" title="next page">
     <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Feature Selection</p>
+        <p class="prev-next-title">Summary</p>
     </div>
     <i class="fas fa-angle-right"></i>
     </a>

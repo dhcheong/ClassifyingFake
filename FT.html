@@ -153,7 +153,12 @@
    </li>
    <li class="toctree-l2">
     <a class="reference internal" href="OHE.html">
-     One Hot Encoding Of The Categorical Variables
+     Label Encoding Vs. One Hot Encoding
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="summary.html">
+     Summary
     </a>
    </li>
   </ul>
@@ -305,6 +310,7 @@
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from sklearn.feature_extraction.text import TfidfVectorizer
 import pandas as pd 
+import pickle
 </pre></div>
 </div>
 </div>
@@ -314,6 +320,7 @@ import pandas as pd
 <span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">line</span> <span class="mi">1</span>
 <span class="ne">----&gt; </span><span class="mi">1</span> <span class="kn">from</span> <span class="nn">sklearn.feature_extraction.text</span> <span class="kn">import</span> <span class="n">TfidfVectorizer</span>
 <span class="g g-Whitespace">      </span><span class="mi">2</span> <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span> 
+<span class="g g-Whitespace">      </span><span class="mi">3</span> <span class="kn">import</span> <span class="nn">pickle</span>
 
 <span class="ne">ModuleNotFoundError</span>: No module named &#39;sklearn&#39;
 </pre></div>
@@ -519,6 +526,7 @@ df_tfidfvect.head()
 <p class="admonition-title">Warning</p>
 <p>This step is essential because if we don’t use the same encoder to train and test the set, it might raise the dimension error in any machine learning algorithm. For example, if we use a different encoder, the feature “planner” in the training set will not appear in the test set so that we can get the numbers of a feature. To avoid this error, we should apply the encoder that was trained by the training set to the test set. Sometimes, people combine train and test sets and run TfidfVectorizer to avoid this error, but we must always assume that we don’t have any test set yet.</p>
 </div>
+<p>We will apply these same step to the columns <code class="docutils literal notranslate"><span class="pre">requirement</span></code>, <code class="docutils literal notranslate"><span class="pre">title</span></code> and <code class="docutils literal notranslate"><span class="pre">benefit</span></code>. If you are curious why we should exclude <code class="docutils literal notranslate"><span class="pre">company_profile</span></code> even though it also contains text data, please refer to <a class="reference internal" href="PF.html"><span class="doc std std-doc">here</span></a>.</p>
 </div>
 
     <script type="text/x-thebe-config">
