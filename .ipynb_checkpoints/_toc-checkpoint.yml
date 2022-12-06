@@ -17,5 +17,6 @@ parts:
     - file: FT
     - file: PF
     - file: OHE
+    - file: summary
   - file: featureselection
   - file: Pipeline
