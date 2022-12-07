@@ -51,7 +51,7 @@
     <script async="async" src="_static/sphinx-thebe.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="prev" title="Feature Selection" href="featureselection.html" />
+    <link rel="prev" title="Text Feature Selection" href="FST.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
     
@@ -160,10 +160,22 @@
    </li>
   </ul>
  </li>
- <li class="toctree-l1">
+ <li class="toctree-l1 has-children">
   <a class="reference internal" href="featureselection.html">
    Feature Selection
   </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/>
+  <label for="toctree-checkbox-2">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="FST.html">
+     Text Feature Selection
+    </a>
+   </li>
+  </ul>
  </li>
  <li class="toctree-l1 current active">
   <a class="current reference internal" href="#">
@@ -304,6 +316,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 import pickle
 import re
 from sklearn.preprocessing import OneHotEncoder
+import joblib
 
 nltk.download(&#39;stopwords&#39;)
 nltk.download(&#39;averaged_perceptron_tagger&#39;)
@@ -539,7 +552,7 @@ nltk.download(&#39;punkt&#39;)
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>def OHE(df, condition = &quot;train&quot;):
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>def OHE_processing(df, condition = &quot;train&quot;):
     &quot;&quot;&quot;One Hot Encoding of all categorical variables&quot;&quot;&quot;
     &quot;&quot;&quot;Input: Data Frame&quot;&quot;&quot;
     &quot;&quot;&quot;Output: Data Frame of dummy variables&quot;&quot;&quot;
@@ -672,15 +685,30 @@ nltk.download(&#39;punkt&#39;)
     df[&quot;required_education&quot;][~bool_series_re] = 0 
     
     return df
-    
 </pre></div>
 </div>
 </div>
 </div>
+<p>Please follow the following steps to process your data. Otherwise, you will face MemoryError.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">train_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;./data/train_set.csv&quot;</span><span class="p">)</span> <span class="c1">#Load Data </span>
+<span class="n">text_features_train</span> <span class="o">=</span> <span class="n">text_processing</span><span class="p">(</span><span class="n">train_data</span><span class="p">)</span> <span class="c1"># Text Processing (Take Long Time)</span>
+<span class="n">joblib</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">text_features_train</span><span class="p">,</span> <span class="s1">&#39;./data/text_features_train_jlib&#39;</span><span class="p">)</span> <span class="c1"># Save it as jlib file </span>
+<span class="n">train_data</span> <span class="o">=</span> <span class="n">location_processing</span><span class="p">(</span><span class="n">train_data</span><span class="p">)</span> <span class="c1"># add State to train data </span>
+<span class="n">OHE_features_train</span> <span class="o">=</span> <span class="n">OHE_processing</span><span class="p">(</span><span class="n">train_data</span><span class="p">)</span> <span class="c1"># OHE</span>
+<span class="n">joblib</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">OHE_features_train</span><span class="p">,</span> <span class="s1">&#39;./data/OHE_features_train_jlib&#39;</span><span class="p">)</span> <span class="c1"># Save OHE features as jlib file </span>
+<span class="n">processed_train</span> <span class="o">=</span> <span class="n">final_processing</span><span class="p">(</span><span class="n">train_data</span><span class="p">)</span> <span class="c1"># Final Processing (will get several warning, ignore)</span>
+<span class="n">joblib</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">processed_train</span><span class="p">,</span> <span class="s1">&#39;./data/processed_train_jlib&#39;</span><span class="p">)</span> <span class="c1"># Save processed train_data as jlib file</span>
+</pre></div>
+</div>
+<p>Combine these three files to get a whole matrix.</p>
+<p>Here is how you unpack the joblib file:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">text_features_train</span> <span class="o">=</span> <span class="n">joblib</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;./data/text_features_train_jlib&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p>Saving these file in csv can cause memory error because of its large file size.
-All dataframes are saved as pickle, not csv.</p>
+<p>Saving these file in csv or pickle can cause memory error because of its large file size.
+All dataframes should be saved as joblib to avoid the error.</p>
 </div>
 </div>
 
@@ -709,11 +737,11 @@ All dataframes are saved as pickle, not csv.</p>
             
                 <!-- Previous / next buttons -->
 <div class='prev-next-area'> 
-    <a class='left-prev' id="prev-link" href="featureselection.html" title="previous page">
+    <a class='left-prev' id="prev-link" href="FST.html" title="previous page">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
             <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">Feature Selection</p>
+            <p class="prev-next-title">Text Feature Selection</p>
         </div>
     </a>
 </div>
