@@ -19,4 +19,6 @@ parts:
     - file: OHE
     - file: summary
   - file: featureselection
+    sections:
+    - file: FST
   - file: Pipeline
