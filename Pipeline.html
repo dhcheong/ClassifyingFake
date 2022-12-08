@@ -708,7 +708,7 @@ nltk.download(&#39;punkt&#39;)
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>Saving these file in csv or pickle can cause memory error because of its large file size.
-All dataframes should be saved as joblib to avoid the error.</p>
+To store array-like object, joblib works better than pickle. Pickle is useful when we need to store non-array object like encoders and models.</p>
 </div>
 </div>
 

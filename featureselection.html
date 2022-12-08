@@ -337,7 +337,7 @@ processed_train = joblib.load(&#39;./data/processed_train_jlib&#39;)
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">train_features</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">text_features_train</span><span class="p">,</span> <span class="n">OHE_features_train</span><span class="p">,</span> <span class="n">processed_train</span><span class="p">],</span> <span class="n">axis</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Then we get the <strong>MemeoryError</strong> because <strong>text_features_train is massive dataframe with 89527 columns.</strong></p>
+<p>Then we get the <strong>MemeoryError</strong> because <strong>text_features_train is massive dataframe with 89527 columns (10 GB).</strong></p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>text_features_train

@@ -302,7 +302,1368 @@
                 
   <div class="tex2jax_ignore mathjax_ignore section" id="text-feature-selection">
 <h1>Text Feature Selection<a class="headerlink" href="#text-feature-selection" title="Permalink to this headline">¶</a></h1>
-<p>As we discussed in <a class="reference internal" href="featureselection.html"><span class="doc std std-doc">here</span></a>, we must perform the feature selection on text features first becuase it is causing MemeoryError due to its massive file size. Since we cannot use the <code class="docutils literal notranslate"><span class="pre">fraudulent</span></code> column, we will use several assumptions and unsupervised feature selection method to reduce its dimension.</p>
+<p>As we discussed in <a class="reference internal" href="featureselection.html"><span class="doc std std-doc">here</span></a>, we must perform the feature selection on text features first becuase it is causing MemeoryError due to its massive file size (10GB). Since we cannot use the <code class="docutils literal notranslate"><span class="pre">fraudulent</span></code> column, we will use column means to select the features based on several assumptions.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import pandas as pd 
+import joblib
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
+<span class="ne">ModuleNotFoundError</span><span class="g g-Whitespace">                       </span>Traceback (most recent call last)
+<span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">line</span> <span class="mi">1</span>
+<span class="ne">----&gt; </span><span class="mi">1</span> <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span> 
+<span class="g g-Whitespace">      </span><span class="mi">2</span> <span class="kn">import</span> <span class="nn">joblib</span>
+
+<span class="ne">ModuleNotFoundError</span>: No module named &#39;pandas&#39;
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>text_features_train = joblib.load(&#39;./data/text_features_train_jlib&#39;)
+text_features_train.head(5)
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>aa_desc</th>
+      <th>aaa_desc</th>
+      <th>aaab_desc</th>
+      <th>aab_desc</th>
+      <th>aabc_desc</th>
+      <th>aabd_desc</th>
+      <th>aabf_desc</th>
+      <th>aac_desc</th>
+      <th>aaccd_desc</th>
+      <th>aachen_desc</th>
+      <th>...</th>
+      <th>zodat_benefits</th>
+      <th>zollman_benefits</th>
+      <th>zombi_benefits</th>
+      <th>zone_benefits</th>
+      <th>zoo_benefits</th>
+      <th>zowel_benefits</th>
+      <th>zu_benefits</th>
+      <th>zult_benefits</th>
+      <th>zutrifft_benefits</th>
+      <th>zweig_benefits</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>0.165596</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+    </tr>
+  </tbody>
+</table>
+<p>5 rows × 89527 columns</p>
+</div></div></div>
+</div>
+<p>Let’s carefully observe the dataframe above. It is very easy to realize that some of these features have unusal names, such as <code class="docutils literal notranslate"><span class="pre">zutrifft</span></code> and <code class="docutils literal notranslate"><span class="pre">aabd</span></code>, and it is hard to believe that they are stemmed from a normal english word. There are two main reasons why those unusual names appear as a feature.</p>
+<ol class="simple">
+<li><p>Although we removed URL and HTML format in the pre-dataprocessing step, it is still possible that some formats are not perfectly removed. Also the data can include other non-English words such as email or file names.</p></li>
+<li><p>If we look over the original dataset, we can observe that text data was saved with no space between lines. For example, “I love dog” (Line 1) “Cat ate fish” (Line 2) to “I love dogCat ate fish”. Then it creates abnormal word “dogCat”.</p></li>
+</ol>
+<p>The best way to remove these unusual words with the lowest computational cost is to use column mean and filter out the features with exceptionally low means. This based on two assumptions that unusual words will appear less frequently than noraml words. For instance, the word like “havecommunication” will not appears frequently across the dataset. If the words appear infrequntly, it will have low mean.</p>
+<p>However, we must not perform this feature selection by column means on the entire dataset since our <code class="docutils literal notranslate"><span class="pre">text_features_train</span></code> dataset is combination of four different columns: <code class="docutils literal notranslate"><span class="pre">description</span></code>, <code class="docutils literal notranslate"><span class="pre">title</span></code>, <code class="docutils literal notranslate"><span class="pre">requirements</span></code> and <code class="docutils literal notranslate"><span class="pre">benefits</span></code>. Since the tf-idf value can vary depend on different characteristics of each dataset, we must get a column mean and select the feature seperately by each dataset, and combine it later to get the best result.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>sum(text_features_train.columns.str.contains(&#39;_desc&#39;))
+text_features_desc = text_features_train.iloc[:, 0:40607]
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>sum(text_features_train.columns.str.contains(&#39;_req&#39;))
+text_features_req = text_features_train.iloc[:, 40607:74863]
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>sum(text_features_train.columns.str.contains(&#39;_title&#39;))
+text_features_title = text_features_train.iloc[:, 74863:78280]
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>sum(text_features_train.columns.str.contains(&#39;_benefits&#39;))
+text_features_benefits = text_features_train.iloc[:, 78280:89527]
+</pre></div>
+</div>
+</div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>We are seperating the dataframe like this to avoid the MemoryError.</p>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>mean_desc = text_features_desc.sum() / 14304
+mean_desc.sort_values(ascending = False)
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>work_desc       3.387162e-02
+develop_desc    3.251693e-02
+team_desc       3.203152e-02
+manag_desc      3.167333e-02
+custom_desc     3.149140e-02
+                    ...     
+peugeot_desc    9.292221e-07
+bencki_desc     9.292221e-07
+sanofi_desc     9.292221e-07
+qmetric_desc    5.049230e-07
+gra_desc        5.049230e-07
+Length: 40607, dtype: float64
+</pre></div>
+</div>
+</div>
+</div>
+<p>The column means for features from <code class="docutils literal notranslate"><span class="pre">description</span></code> dataset shows that the assumptions we made previously are somewhat reasonable. As we see here, more the average, the words look more normal, such as “work” and “develope”.</p>
+<p>Since the highest mean is 0.03387162, let’s choose all features with average mean higher than 0.005.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>select_desc = mean_desc &gt; 0.005
+selected_features_desc = text_features_desc.loc[:, select_desc]
+selected_features_desc.head()
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>abil_desc</th>
+      <th>abl_desc</th>
+      <th>account_desc</th>
+      <th>achiev_desc</th>
+      <th>across_desc</th>
+      <th>activ_desc</th>
+      <th>adkin_desc</th>
+      <th>administr_desc</th>
+      <th>adverti_desc</th>
+      <th>agenc_desc</th>
+      <th>...</th>
+      <th>web_desc</th>
+      <th>websit_desc</th>
+      <th>week_desc</th>
+      <th>well_desc</th>
+      <th>within_desc</th>
+      <th>work_desc</th>
+      <th>world_desc</th>
+      <th>would_desc</th>
+      <th>write_desc</th>
+      <th>year_desc</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>0.043316</td>
+      <td>0.04441</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.021943</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.038188</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>0.000000</td>
+      <td>0.00000</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.045662</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>0.050161</td>
+      <td>0.00000</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>0.049229</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.043822</td>
+      <td>0.047252</td>
+      <td>0.025411</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.044223</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>0.000000</td>
+      <td>0.00000</td>
+      <td>0.052053</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.045984</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>0.000000</td>
+      <td>0.00000</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.036083</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>0.068596</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.069462</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.092432</td>
+    </tr>
+  </tbody>
+</table>
+<p>5 rows × 296 columns</p>
+</div></div></div>
+</div>
+<p>This looks much better. We will repeat the process for the other dataframes as well.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>mean_req = text_features_req.sum() / 14304
+mean_req.sort_values(ascending = False)
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>experi_req       0.052954
+work_req         0.034828
+skill_req        0.033378
+requir_req       0.031967
+year_req         0.027195
+                   ...   
+cano_req         0.000002
+mcnz_req         0.000002
+orthopaed_req    0.000002
+inhabit_req      0.000002
+zeta_req         0.000001
+Length: 34256, dtype: float64
+</pre></div>
+</div>
+</div>
+</div>
+<p>Since TF-IDF is bit higher for <code class="docutils literal notranslate"><span class="pre">text_feature_req</span></code>, we will adjust the threshold a bit to adjust for the difference.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>select_req = mean_req &gt; 0.007
+selected_features_req = text_features_req.loc[:, select_req]
+selected_features_req.head()
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>abil_req</th>
+      <th>abl_req</th>
+      <th>account_req</th>
+      <th>analyt_req</th>
+      <th>applic_req</th>
+      <th>attitud_req</th>
+      <th>avail_req</th>
+      <th>bachelor_req</th>
+      <th>background_req</th>
+      <th>build_req</th>
+      <th>...</th>
+      <th>us_req</th>
+      <th>use_req</th>
+      <th>verbal_req</th>
+      <th>web_req</th>
+      <th>well_req</th>
+      <th>within_req</th>
+      <th>work_req</th>
+      <th>write_req</th>
+      <th>written_req</th>
+      <th>year_req</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>0.081650</td>
+      <td>0.105596</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>...</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.105239</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.064795</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.068928</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.060783</td>
+      <td>0.000000</td>
+      <td>...</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.051181</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.061549</td>
+      <td>0.063024</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.033522</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>...</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>0.047567</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.070560</td>
+      <td>...</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.061309</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.075495</td>
+      <td>0.0</td>
+      <td>0.054646</td>
+      <td>0.040155</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.141105</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.067876</td>
+      <td>...</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.072623</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.038628</td>
+    </tr>
+  </tbody>
+</table>
+<p>5 rows × 112 columns</p>
+</div></div></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>mean_title = text_features_title.sum() / 14304
+mean_title.sort_values(ascending = False)
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>manag_title           0.048922
+develop_title         0.046175
+engin_title           0.038562
+sale_title            0.029780
+servic_title          0.024249
+                        ...   
+maharashtra_title     0.000024
+barri_title           0.000024
+peterborough_title    0.000024
+haliburton_title      0.000024
+elgin_title           0.000021
+Length: 3417, dtype: float64
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>select_title = mean_title &gt; 0.01
+selected_features_title = text_features_title.loc[:, select_title]
+selected_features_title.head()
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>abroad_title</th>
+      <th>account_title</th>
+      <th>administr_title</th>
+      <th>analyst_title</th>
+      <th>assist_title</th>
+      <th>associ_title</th>
+      <th>busi_title</th>
+      <th>consult_title</th>
+      <th>custom_title</th>
+      <th>data_title</th>
+      <th>...</th>
+      <th>product_title</th>
+      <th>project_title</th>
+      <th>repres_title</th>
+      <th>sale_title</th>
+      <th>senior_title</th>
+      <th>servic_title</th>
+      <th>softwar_title</th>
+      <th>specialist_title</th>
+      <th>teacher_title</th>
+      <th>web_title</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.441629</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.616325</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.561059</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.552591</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.440388</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.284294</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+    </tr>
+  </tbody>
+</table>
+<p>5 rows × 32 columns</p>
+</div></div></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>mean_benefits = text_features_benefits.sum() / 14304
+mean_benefits.sort_values(ascending = False)
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>job_benefits         0.026567
+descript_benefits    0.026070
+see_benefits         0.025900
+benefit_benefits     0.025386
+work_benefits        0.024180
+                       ...   
+ebe_benefits         0.000002
+efd_benefits         0.000002
+efff_benefits        0.000002
+cdc_benefits         0.000002
+charit_benefits      0.000001
+Length: 11247, dtype: float64
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>select_benefits = mean_benefits &gt; 0.007
+selected_features_benefits = text_features_benefits.loc[:, select_benefits]
+selected_features_benefits.head()
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>base_benefits</th>
+      <th>benefit_benefits</th>
+      <th>bonu_benefits</th>
+      <th>career_benefits</th>
+      <th>compani_benefits</th>
+      <th>compens_benefits</th>
+      <th>competit_benefits</th>
+      <th>day_benefits</th>
+      <th>dental_benefits</th>
+      <th>descript_benefits</th>
+      <th>...</th>
+      <th>prospect_benefits</th>
+      <th>provid_benefits</th>
+      <th>salari_benefits</th>
+      <th>see_benefits</th>
+      <th>team_benefits</th>
+      <th>time_benefits</th>
+      <th>train_benefits</th>
+      <th>vacat_benefits</th>
+      <th>vision_benefits</th>
+      <th>work_benefits</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>0.0</td>
+      <td>0.074620</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.164345</td>
+      <td>0.0</td>
+      <td>0.078806</td>
+      <td>0.097701</td>
+      <td>0.090261</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.082821</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.088521</td>
+      <td>0.0</td>
+      <td>0.204903</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>0.0</td>
+      <td>0.109283</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.132191</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.150045</td>
+      <td>0.150367</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>0.0</td>
+      <td>0.042046</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.046302</td>
+      <td>0.0</td>
+      <td>0.044405</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.046667</td>
+      <td>0.0</td>
+      <td>0.148054</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.057729</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+    </tr>
+  </tbody>
+</table>
+<p>5 rows × 44 columns</p>
+</div></div></div>
+</div>
+<p>We will combine all dataframe and export it as joblib.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>text_feature = pd.concat([selected_features_desc, selected_features_req, selected_features_title, selected_features_benefits], axis=1)
+text_feature
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>abil_desc</th>
+      <th>abl_desc</th>
+      <th>account_desc</th>
+      <th>achiev_desc</th>
+      <th>across_desc</th>
+      <th>activ_desc</th>
+      <th>adkin_desc</th>
+      <th>administr_desc</th>
+      <th>adverti_desc</th>
+      <th>agenc_desc</th>
+      <th>...</th>
+      <th>prospect_benefits</th>
+      <th>provid_benefits</th>
+      <th>salari_benefits</th>
+      <th>see_benefits</th>
+      <th>team_benefits</th>
+      <th>time_benefits</th>
+      <th>train_benefits</th>
+      <th>vacat_benefits</th>
+      <th>vision_benefits</th>
+      <th>work_benefits</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>0.043316</td>
+      <td>0.04441</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.082821</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.088521</td>
+      <td>0.0</td>
+      <td>0.204903</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>0.000000</td>
+      <td>0.00000</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.045662</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>0.050161</td>
+      <td>0.00000</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>0.000000</td>
+      <td>0.00000</td>
+      <td>0.052053</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.150045</td>
+      <td>0.150367</td>
+      <td>0.000000</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>0.000000</td>
+      <td>0.00000</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.036083</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.046667</td>
+      <td>0.0</td>
+      <td>0.148054</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.057729</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>14299</th>
+      <td>0.000000</td>
+      <td>0.00000</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.060816</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.230658</td>
+    </tr>
+    <tr>
+      <th>14300</th>
+      <td>0.000000</td>
+      <td>0.00000</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.073304</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+    </tr>
+    <tr>
+      <th>14301</th>
+      <td>0.000000</td>
+      <td>0.00000</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.119119</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+    </tr>
+    <tr>
+      <th>14302</th>
+      <td>0.000000</td>
+      <td>0.00000</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.057005</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+    </tr>
+    <tr>
+      <th>14303</th>
+      <td>0.000000</td>
+      <td>0.00000</td>
+      <td>0.077250</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+    </tr>
+  </tbody>
+</table>
+<p>14304 rows × 484 columns</p>
+</div></div></div>
+</div>
 </div>
 
     <script type="text/x-thebe-config">
