@@ -21,4 +21,5 @@ parts:
   - file: featureselection
     sections:
     - file: FST
+    - file: FinalFeatureSelection
   - file: Pipeline
