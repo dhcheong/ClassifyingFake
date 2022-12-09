@@ -9,7 +9,7 @@ parts:
   - file: markdown
   - file: DataDes
   - file: Plan
-- caption: Data Preprocessing
+- caption: Data Preprocessing & Feature Engineering
   chapters:
   - file: dataprocess
   - file: featurescreate
@@ -23,3 +23,7 @@ parts:
     - file: FST
     - file: FinalFeatureSelection
   - file: Pipeline
+- caption: Making Machine Learning Prediction
+  chapters:
+  - file: processtest
+  - file: RF
