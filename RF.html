@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Train and Test Split &#8212; Classifying Fake Job Posting Using Machine Learning Algorithm</title>
+    <title>Random Forest &#8212; Classifying Fake Job Posting Using Machine Learning Algorithm</title>
     
   <link href="_static/css/theme.css" rel="stylesheet">
   <link href="_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
@@ -51,8 +51,7 @@
     <script async="async" src="_static/sphinx-thebe.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Data Cleaning" href="dataprocess.html" />
-    <link rel="prev" title="Data Description" href="DataDes.html" />
+    <link rel="prev" title="Processing The Test Dataset" href="processtest.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
     
@@ -101,7 +100,7 @@
   Introduction
  </span>
 </p>
-<ul class="current nav bd-sidenav">
+<ul class="nav bd-sidenav">
  <li class="toctree-l1">
   <a class="reference internal" href="markdown.html">
    Preface
@@ -112,8 +111,8 @@
    Data Description
   </a>
  </li>
- <li class="toctree-l1 current active">
-  <a class="current reference internal" href="#">
+ <li class="toctree-l1">
+  <a class="reference internal" href="Plan.html">
    Train and Test Split
   </a>
  </li>
@@ -194,14 +193,14 @@
   Making Machine Learning Prediction
  </span>
 </p>
-<ul class="nav bd-sidenav">
+<ul class="current nav bd-sidenav">
  <li class="toctree-l1">
   <a class="reference internal" href="processtest.html">
    Processing The Test Dataset
   </a>
  </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="RF.html">
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
    Random Forest
   </a>
  </li>
@@ -246,7 +245,7 @@
         <!-- ipynb file if we had a myst markdown file -->
         
         <!-- Download raw file -->
-        <a class="dropdown-buttons" href="_sources/Plan.ipynb"><button type="button"
+        <a class="dropdown-buttons" href="_sources/RF.ipynb"><button type="button"
                 class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
                 data-placement="left">.ipynb</button></a>
         <!-- Download PDF via print -->
@@ -266,7 +265,7 @@
                 data-toggle="tooltip" data-placement="left" title="Source repository"><i
                     class="fab fa-github"></i>repository</button></a>
         <a class="issues-button"
-            href="https://github.com/executablebooks/jupyter-book/issues/new?title=Issue%20on%20page%20%2FPlan.html&body=Your%20issue%20content%20here."><button
+            href="https://github.com/executablebooks/jupyter-book/issues/new?title=Issue%20on%20page%20%2FRF.html&body=Your%20issue%20content%20here."><button
                 type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
                 title="Open an issue"><i class="fas fa-lightbulb"></i>open issue</button></a>
         
@@ -287,7 +286,7 @@
         aria-label="Launch interactive content"><i class="fas fa-rocket"></i></button>
     <div class="dropdown-buttons">
         
-        <a class="binder-button" href="https://mybinder.org/v2/gh/executablebooks/jupyter-book/master?urlpath=tree/docs/Plan.ipynb"><button type="button"
+        <a class="binder-button" href="https://mybinder.org/v2/gh/executablebooks/jupyter-book/master?urlpath=tree/docs/RF.ipynb"><button type="button"
                 class="btn btn-secondary topbarbtn" title="Launch Binder" data-toggle="tooltip"
                 data-placement="left"><img class="binder-button-logo"
                     src="_static/images/logo_binder.svg"
@@ -311,7 +310,7 @@
         <div class="col-12 col-md-9 pl-md-3 pr-md-0">
             <!-- Table of contents that is only displayed when printing the page -->
             <div id="jb-print-docs-body" class="onlyprint">
-                <h1>Train and Test Split</h1>
+                <h1>Random Forest</h1>
                 <!-- Table of contents -->
                 <div id="print-main-content">
                     <div id="jb-print-toc">
@@ -322,40 +321,8 @@
             
               <div>
                 
-  <div class="tex2jax_ignore mathjax_ignore section" id="train-and-test-split">
-<h1>Train and Test Split<a class="headerlink" href="#train-and-test-split" title="Permalink to this headline">¶</a></h1>
-<p>Since we have a relatively small number of fraudulent postings compared to non-fraudulent postings, we want to ensure that both the train and test set have the same percentage of fraudulent as the original dataset. In the original dataset, we have about 5% of fraudulent postings, so we will ensure that the train and test set have the same percentage to keep the representativeness of the train and test sets. We will use an 80%/20% split to ensure that we use the data with the balanced output class to avoid problems like overfitting or underfitting.</p>
-<p>To do this split correctly, we will do a <strong>stratified train-test split</strong> using the train_test_split() function in the scikit-learn Python machine-learning library.</p>
-<p>Here is the code I used to create the train and test set.</p>
-<div class="cell tag_hide-output docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import pandas as pd 
-from sklearn.model_selection import train_test_split
-data = pd.read_csv(&quot;./data/fake_job_postings.csv&quot;)
-y = data.iloc[:, -1]
-X = data.iloc[:, :-1]
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, random_state = 42, stratify = y)
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
-<span class="ne">ModuleNotFoundError</span><span class="g g-Whitespace">                       </span>Traceback (most recent call last)
-<span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">line</span> <span class="mi">1</span>
-<span class="ne">----&gt; </span><span class="mi">1</span> <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span> 
-<span class="g g-Whitespace">      </span><span class="mi">2</span> <span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">train_test_split</span>
-<span class="g g-Whitespace">      </span><span class="mi">3</span> <span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;./data/fake_job_postings.csv&quot;</span><span class="p">)</span>
-
-<span class="ne">ModuleNotFoundError</span>: No module named &#39;pandas&#39;
-</pre></div>
-</div>
-</div>
-</div>
-<p>We will use the random_state = 42 to ensure that we get same train and test set throughout the book.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>In the original project, the raw training set had 5362 rows with 259 fradulent and the test set had 5000 rows with 50 fradulent. We had 5% of fradulent on the training set while we only have 1% of fradulent on the test set, indicating the train and test set for the original project were not created through a stratified train-test split.</p>
-</div>
+  <div class="tex2jax_ignore mathjax_ignore section" id="random-forest">
+<h1>Random Forest<a class="headerlink" href="#random-forest" title="Permalink to this headline">¶</a></h1>
 </div>
 
     <script type="text/x-thebe-config">
@@ -383,19 +350,12 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, rando
             
                 <!-- Previous / next buttons -->
 <div class='prev-next-area'> 
-    <a class='left-prev' id="prev-link" href="DataDes.html" title="previous page">
+    <a class='left-prev' id="prev-link" href="processtest.html" title="previous page">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
             <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">Data Description</p>
+            <p class="prev-next-title">Processing The Test Dataset</p>
         </div>
-    </a>
-    <a class='right-next' id="next-link" href="dataprocess.html" title="next page">
-    <div class="prev-next-info">
-        <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Data Cleaning</p>
-    </div>
-    <i class="fas fa-angle-right"></i>
     </a>
 </div>
             
