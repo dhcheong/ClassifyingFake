@@ -27,3 +27,5 @@ parts:
   chapters:
   - file: processtest
   - file: RF
+    sections:
+    - file: TuningHPRF
