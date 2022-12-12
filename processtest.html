@@ -215,6 +215,11 @@
      Tuning the Hyperparameters of the Random Forest Model
     </a>
    </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="RFTrain.html">
+     Random Forest Result: Training Dataset
+    </a>
+   </li>
   </ul>
  </li>
 </ul>
@@ -336,6 +341,796 @@
                 
   <div class="tex2jax_ignore mathjax_ignore section" id="processing-the-test-dataset">
 <h1>Processing The Test Dataset<a class="headerlink" href="#processing-the-test-dataset" title="Permalink to this headline">¶</a></h1>
+<p>In this section, we will process our test dataset using the pipeline we made on the previous section.</p>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import pandas as pd
+import numpy as np
+import nltk
+from nltk.corpus import stopwords
+from nltk.stem.porter import PorterStemmer
+from nltk.tokenize import word_tokenize,sent_tokenize
+import re,string,unicodedata
+from nltk.tokenize.toktok import ToktokTokenizer
+from sklearn.feature_extraction.text import TfidfVectorizer
+import pickle
+import re
+from sklearn.preprocessing import OneHotEncoder
+import joblib
+
+nltk.download(&#39;stopwords&#39;)
+nltk.download(&#39;averaged_perceptron_tagger&#39;)
+nltk.download(&#39;wordnet&#39;)
+nltk.download(&#39;omw-1.4&#39;)
+nltk.download(&#39;punkt&#39;)
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
+<span class="ne">ModuleNotFoundError</span><span class="g g-Whitespace">                       </span>Traceback (most recent call last)
+<span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">line</span> <span class="mi">1</span>
+<span class="ne">----&gt; </span><span class="mi">1</span> <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="g g-Whitespace">      </span><span class="mi">2</span> <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="g g-Whitespace">      </span><span class="mi">3</span> <span class="kn">import</span> <span class="nn">nltk</span>
+
+<span class="ne">ModuleNotFoundError</span>: No module named &#39;pandas&#39;
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>def text_processing(df, condition = &quot;train&quot;):
+    &quot;&quot;&quot;Extract text features from columns&quot;&quot;&quot;
+    &quot;&quot;&quot;Input: Data frame &quot;&quot;&quot;
+    &quot;&quot;&quot;Output: Data frame of extracted text features with their TF-IDF&quot;&quot;&quot;
+    
+    df[&quot;description&quot;] = df[&quot;description&quot;].str.lower()
+    df[&quot;requirements&quot;] = df[&quot;requirements&quot;].str.lower()
+    df[&quot;benefits&quot;] = df[&quot;benefits&quot;].str.lower()
+    df[&quot;title&quot;] = df[&quot;title&quot;].str.lower()
+    
+    # Remove all NA 
+    df[&quot;description&quot;].fillna(&quot; &quot;, inplace = True)
+    df[&quot;requirements&quot;].fillna(&quot; &quot;, inplace = True)
+    df[&quot;benefits&quot;].fillna(&quot; &quot;, inplace = True)
+    df[&quot;title&quot;].fillna(&quot; &quot;, inplace = True)
+    
+    # Remove unnecessary words and punctuation / stemming
+    
+    stop = set(stopwords.words(&#39;english&#39;))
+    stop = list(stop)
+
+    def remove_URL(text):
+        url = re.compile(r&#39;#url_\w*#&#39;)
+        return url.sub(r&#39;url &#39;,str(text))
+
+    def remove_emoji(text):
+        emoji_pattern = re.compile(&quot;[&quot;
+                               u&quot;\U0001F600-\U0001F64F&quot;  # emoticons
+                               u&quot;\U0001F300-\U0001F5FF&quot;  # symbols &amp; pictographs
+                               u&quot;\U0001F680-\U0001F6FF&quot;  # transport &amp; map symbols
+                               u&quot;\U0001F1E0-\U0001F1FF&quot;  # flags (iOS)
+                               u&quot;\U00002702-\U000027B0&quot;
+                               u&quot;\U000024C2-\U0001F251&quot;
+                               &quot;]+&quot;, flags=re.UNICODE)
+        return emoji_pattern.sub(r&#39; &#39;, str(text))
+
+    def remove_html(text):
+        html=re.compile(r&#39;&lt;.*?&gt;&#39;)
+        return html.sub(r&#39;html &#39;,str(text))
+
+    def remove_stopwords(words):
+        return &#39; &#39;.join(word for word in str(words).split() if word not in stop)
+
+    def remove_punctuation(words):
+        return &#39; &#39;.join(word.strip(string.punctuation) for word in str(words).split())
+
+    def remove_dirty_words(words):
+        dirty_words=re.compile(r&#39;[^\x00-\x7F]+|(&amp;amp)|\d|[^\w\s]&#39;)
+        return dirty_words.sub(r&#39; &#39;,str(words))
+    
+    def stemSentence(sentence):
+        porter=PorterStemmer()
+        token_words=word_tokenize(sentence)
+        token_words
+        stem_sentence=[]
+        for word in token_words:
+            stem_sentence.append(porter.stem(word))
+            stem_sentence.append(&quot; &quot;)
+        return &quot;&quot;.join(stem_sentence)
+    
+    df[&quot;description&quot;] = df.description.apply(remove_URL)
+    df[&quot;description&quot;] = df.description.apply(remove_html)
+    df[&quot;description&quot;] = df.description.apply(remove_emoji)
+    df[&quot;description&quot;] = df.description.apply(remove_dirty_words)
+    df[&quot;description&quot;] = df.description.apply(remove_punctuation)
+    df[&quot;description&quot;] = df.description.apply(remove_stopwords)
+    df[&quot;description&quot;] = df.description.apply(stemSentence)
+    
+    df[&quot;title&quot;] = df.title.apply(remove_URL)
+    df[&quot;title&quot;] = df.title.apply(remove_html)
+    df[&quot;title&quot;] = df.title.apply(remove_emoji)
+    df[&quot;title&quot;] = df.title.apply(remove_dirty_words)
+    df[&quot;title&quot;] = df.title.apply(remove_punctuation)
+    df[&quot;title&quot;] = df.title.apply(remove_stopwords)
+    df[&quot;title&quot;] = df.title.apply(stemSentence)
+    
+    df[&quot;benefits&quot;] = df.benefits.apply(remove_URL)
+    df[&quot;benefits&quot;] = df.benefits.apply(remove_html)
+    df[&quot;benefits&quot;] = df.benefits.apply(remove_emoji)
+    df[&quot;benefits&quot;] = df.benefits.apply(remove_dirty_words)
+    df[&quot;benefits&quot;] = df.benefits.apply(remove_punctuation)
+    df[&quot;benefits&quot;] = df.benefits.apply(remove_stopwords)
+    df[&quot;benefits&quot;] = df.benefits.apply(stemSentence)
+    
+    df[&quot;requirements&quot;] = df.requirements.apply(remove_URL)
+    df[&quot;requirements&quot;] = df.requirements.apply(remove_html)
+    df[&quot;requirements&quot;] = df.requirements.apply(remove_emoji)
+    df[&quot;requirements&quot;] = df.requirements.apply(remove_dirty_words)
+    df[&quot;requirements&quot;] = df.requirements.apply(remove_punctuation)
+    df[&quot;requirements&quot;] = df.requirements.apply(remove_stopwords)
+    df[&quot;requirements&quot;] = df.requirements.apply(stemSentence)
+    
+    
+    # Feature Extraction
+    
+    if condition == &quot;test&quot;:
+        with open(&#39;./pickle/vec_description.pkl&#39;, &#39;rb&#39;) as f:
+            vec_description = pickle.load(f)
+        
+        with open(&#39;./pickle/vec_title.pkl&#39;, &#39;rb&#39;) as f:
+            vec_title = pickle.load(f)
+            
+        with open(&#39;./pickle/vec_benefits.pkl&#39;, &#39;rb&#39;) as f:
+            vec_benefits = pickle.load(f)
+            
+        with open(&#39;./pickle/vec_requirements.pkl&#39;, &#39;rb&#39;) as f:
+            vec_requirements = pickle.load(f)
+        
+        tfidf_description = vec_description.transform(df[&quot;description&quot;])
+        features_name_desc = vec_description.get_feature_names_out() + &quot;_desc&quot;
+        desc_features = pd.DataFrame(data = tfidf_description.toarray(), columns = features_name_desc)
+
+        tfidf_requirements = vec_requirements.transform(df[&quot;requirements&quot;])
+        features_name_req = vec_requirements.get_feature_names_out() + &quot;_req&quot;
+        req_features = pd.DataFrame(data = tfidf_requirements.toarray(), columns = features_name_req)
+
+        tfidf_title = vec_title.transform(df[&quot;title&quot;])
+        features_name_title = vec_title.get_feature_names_out() + &quot;_title&quot;
+        title_features = pd.DataFrame(data = tfidf_title.toarray(), columns = features_name_title)
+        
+        tfidf_benefits = vec_benefits.transform(df[&quot;benefits&quot;])
+        features_name_benefits = vec_benefits.get_feature_names_out() +&quot;_benefits&quot;
+        benefits_features = pd.DataFrame(data = tfidf_benefits.toarray(), columns = features_name_benefits)
+        
+        feature_text = pd.concat([desc_features, req_features, title_features, benefits_features], axis=1)
+        
+    else:
+
+        vec_description = TfidfVectorizer(smooth_idf=True)
+        tfidf_description = vec_description.fit_transform(df[&quot;description&quot;])
+        features_name_desc = vec_description.get_feature_names_out() + &quot;_desc&quot;
+        desc_features = pd.DataFrame(data = tfidf_description.toarray(), columns = features_name_desc)
+
+        vec_requirements = TfidfVectorizer(smooth_idf=True)
+        tfidf_requirements = vec_requirements.fit_transform(df[&quot;requirements&quot;])
+        features_name_req = vec_requirements.get_feature_names_out() + &quot;_req&quot;
+        req_features = pd.DataFrame(data = tfidf_requirements.toarray(), columns = features_name_req)
+
+        vec_title = TfidfVectorizer(smooth_idf=True)
+        tfidf_title = vec_title.fit_transform(df[&quot;title&quot;])
+        features_name_title = vec_title.get_feature_names_out() + &quot;_title&quot;
+        title_features = pd.DataFrame(data = tfidf_title.toarray(), columns = features_name_title)
+
+        vec_benefits = TfidfVectorizer(smooth_idf=True)
+        tfidf_benefits = vec_benefits.fit_transform(df[&quot;benefits&quot;])
+        features_name_benefits = vec_benefits.get_feature_names_out() + &quot;_benefits&quot;
+        benefits_features = pd.DataFrame(data = tfidf_benefits.toarray(), columns = features_name_benefits)
+        
+        feature_text = pd.concat([desc_features, req_features, title_features, benefits_features], axis=1)
+        
+        with open(&#39;./pickle/vec_description.pkl&#39;, &#39;wb&#39;) as f:
+            pickle.dump(vec_description, f)
+        
+        with open(&#39;./pickle/vec_title.pkl&#39;, &#39;wb&#39;) as f:
+            pickle.dump(vec_title, f)
+            
+        with open(&#39;./pickle/vec_benefits.pkl&#39;, &#39;wb&#39;) as f:
+            pickle.dump(vec_benefits, f)
+            
+        with open(&#39;./pickle/vec_requirements.pkl&#39;, &#39;wb&#39;) as f:
+            pickle.dump(vec_requirements, f)
+        
+    return feature_text
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>def location_processing(df):
+    def extract_state(s):
+        &quot;&quot;&quot; Extract state from the location&quot;&quot;&quot;
+        &quot;&quot;&quot; The function can be used only when the state is formmated with two capital letter&quot;&quot;&quot;
+        &quot;&quot;&quot; Input: Series, iterable object&quot;&quot;&quot;
+        &quot;&quot;&quot; Output: List of States&quot;&quot;&quot;
+    
+        s.fillna(&quot;No Location&quot;, inplace = True)
+        result = []    
+        for i in np.arange(len(s)):
+            if (s[i].__contains__(&quot;US&quot;)):
+                extracted = re.findall(r&#39;[A-Z]{2}&#39;, re.sub(r&#39;[US]&#39;,&#39;&#39;,s[i]))
+                # Edge Case 1: Posting is from US but State is not posted
+                if extracted == []:
+                    extracted = [&quot;Domestic&quot;]
+                # Edge Case 2: Regex detect a city name as a State name
+                if len(extracted) != 1:
+                    while len(extracted) &gt; 1:
+                        extracted.pop()
+                result += extracted
+            else:
+                # Edge Case 3: Location is not given 
+                if s[i] == [&quot;No Location&quot;]:
+                    result += s[i]
+                # Edge Case 4: Location is given but not in US
+                elif re.findall(r&#39;[A-Z]{2}&#39;, s[i]) != []:
+                    result += [&quot;Foreign&quot;]
+                # Edge Case 5: Location cannot be identified from the given information
+                else:
+                    result += [&quot;No Location&quot;]
+        return result
+
+    result = extract_state(df[&quot;location&quot;])
+    df[&quot;state&quot;] = result
+    
+    return df 
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>def OHE_processing(df, condition = &quot;train&quot;):
+    &quot;&quot;&quot;One Hot Encoding of all categorical variables&quot;&quot;&quot;
+    &quot;&quot;&quot;Input: Data Frame&quot;&quot;&quot;
+    &quot;&quot;&quot;Output: Data Frame of dummy variables&quot;&quot;&quot;
+    
+    if condition == &quot;test&quot;:
+        with open(&#39;./pickle/encoder_func.pkl&#39;, &#39;rb&#39;) as f:
+            encoder_func = pickle.load(f)
+        
+        with open(&#39;./pickle/encoder_et.pkl&#39;, &#39;rb&#39;) as f:
+            encoder_et = pickle.load(f)
+            
+        with open(&#39;./pickle/encoder_re.pkl&#39;, &#39;rb&#39;) as f:
+            encoder_re = pickle.load(f)
+            
+        with open(&#39;./pickle/encoder_ind.pkl&#39;, &#39;rb&#39;) as f:
+            encoder_ind = pickle.load(f)
+        
+        with open(&#39;./pickle/encoder_state.pkl&#39;, &#39;rb&#39;) as f:
+            encoder_state = pickle.load(f)
+            
+        
+        df[&quot;function&quot;].fillna(&quot;NAN&quot;, inplace = True)
+        df[&quot;employment_type&quot;].fillna(&quot;NAN&quot;, inplace = True)
+        df[&quot;required_experience&quot;].fillna(&quot;NAN&quot;, inplace = True)
+        df[&quot;industry&quot;].fillna(&quot;NAN&quot;, inplace = True)
+        df[&quot;state&quot;].fillna(&quot;NAN&quot;, inplace = True)
+
+        encode_function = encoder_func.transform(df[[&#39;function&#39;]])
+        feature_name_func = encoder_func.get_feature_names_out()
+        encoder_df_func = pd.DataFrame(encode_function.toarray(), columns = feature_name_func)
+
+        encode_et = encoder_et.transform(df[[&#39;employment_type&#39;]])
+        feature_name_et = encoder_et.get_feature_names_out()
+        encoder_df_et = pd.DataFrame(encode_et.toarray(), columns = feature_name_et)
+
+        encode_re = encoder_re.transform(df[[&#39;required_experience&#39;]])
+        feature_name_re = encoder_re.get_feature_names_out()
+        encoder_df_re = pd.DataFrame(encode_re.toarray(), columns = feature_name_re)
+
+        encode_ind = encoder_ind.transform(df[[&#39;industry&#39;]])
+        feature_name_ind = encoder_ind.get_feature_names_out()
+        encoder_df_ind = pd.DataFrame(encode_ind.toarray(), columns = feature_name_ind)
+        
+        encode_state = encoder_state.transform(df[[&#39;state&#39;]])
+        feature_name_state = encoder_state.get_feature_names_out()
+        encoder_df_state = pd.DataFrame(encode_state.toarray(), columns = feature_name_state)
+
+        ohe_feature = pd.concat([encoder_df_func, encoder_df_et, encoder_df_re, encoder_df_ind], axis=1)
+    
+    else:   
+        df[&quot;function&quot;].fillna(&quot;NAN&quot;, inplace = True)
+        df[&quot;employment_type&quot;].fillna(&quot;NAN&quot;, inplace = True)
+        df[&quot;required_experience&quot;].fillna(&quot;NAN&quot;, inplace = True)
+        df[&quot;industry&quot;].fillna(&quot;NAN&quot;, inplace = True)
+        df[&quot;state&quot;].fillna(&quot;NAN&quot;, inplace = True)
+
+        encoder_state = OneHotEncoder(handle_unknown = &#39;ignore&#39;)
+        encode_state = encoder_state.fit_transform(df[[&#39;state&#39;]])
+        feature_name_state = encoder_state.get_feature_names_out()
+        encoder_df_state = pd.DataFrame(encode_state.toarray(), columns = feature_name_state)
+        
+        encoder_func = OneHotEncoder(handle_unknown = &#39;ignore&#39;)
+        encode_function = encoder_func.fit_transform(df[[&#39;function&#39;]])
+        feature_name_func = encoder_func.get_feature_names_out()
+        encoder_df_func = pd.DataFrame(encode_function.toarray(), columns = feature_name_func)
+
+        encoder_et = OneHotEncoder(handle_unknown = &#39;ignore&#39;)
+        encode_et = encoder_et.fit_transform(df[[&#39;employment_type&#39;]])
+        feature_name_et = encoder_et.get_feature_names_out()
+        encoder_df_et = pd.DataFrame(encode_et.toarray(), columns = feature_name_et)
+
+        encoder_re = OneHotEncoder(handle_unknown = &#39;ignore&#39;)
+        encode_re = encoder_re.fit_transform(df[[&#39;required_experience&#39;]])
+        feature_name_re = encoder_re.get_feature_names_out()
+        encoder_df_re = pd.DataFrame(encode_re.toarray(), columns = feature_name_re)
+
+        encoder_ind = OneHotEncoder(handle_unknown = &#39;ignore&#39;)
+        encode_ind = encoder_ind.fit_transform(df[[&#39;industry&#39;]])
+        feature_name_ind = encoder_ind.get_feature_names_out()
+        encoder_df_ind = pd.DataFrame(encode_ind.toarray(), columns = feature_name_ind)
+
+        ohe_feature = pd.concat([encoder_df_func, encoder_df_et, encoder_df_re, encoder_df_ind], axis=1)
+        
+        with open(&#39;./pickle/encoder_func.pkl&#39;, &#39;wb&#39;) as f:
+                pickle.dump(encoder_func, f)
+
+        with open(&#39;./pickle/encoder_et.pkl&#39;, &#39;wb&#39;) as f:
+            pickle.dump(encoder_et, f)
+
+        with open(&#39;./pickle/encoder_re.pkl&#39;, &#39;wb&#39;) as f:
+            pickle.dump(encoder_re, f)
+
+        with open(&#39;./pickle/encoder_ind.pkl&#39;, &#39;wb&#39;) as f:
+            pickle.dump(encoder_ind, f)
+            
+        with open(&#39;./pickle/encoder_state.pkl&#39;, &#39;wb&#39;) as f:
+            pickle.dump(encoder_state, f)
+    
+    return ohe_feature
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>def final_processing(df):
+    &quot;&quot;&quot; Delete Unused columns, binarization and location extraction&quot;&quot;&quot;
+    &quot;&quot;&quot; Input: Data Frame &quot;&quot;&quot;
+    &quot;&quot;&quot; Output: processed Data Frame&quot;&quot;&quot;
+        
+    # Remove job_id, department, salary_range and location
+    
+    df = df.drop([&#39;job_id&#39;, &#39;department&#39;, &#39;salary_range&#39;, &#39;location&#39;], axis=1)
+    df = df.drop([&#39;description&#39;, &#39;requirements&#39;, &#39;title&#39;, &#39;benefits&#39;], axis=1)
+    df = df.drop([&#39;function&#39;, &#39;employment_type&#39;, &#39;required_experience&#39;, &#39;industry&#39;, &#39;state&#39;], axis=1)
+    
+    # binarize company_profile and required_education 
+    
+    bool_series_cp = pd.isnull(df[&quot;company_profile&quot;])
+    df[&quot;company_profile&quot;][bool_series_cp] = 1
+    df[&quot;company_profile&quot;][~bool_series_cp] = 0 
+    
+    bool_series_re = pd.isnull(df[&quot;required_education&quot;])
+    df[&quot;required_education&quot;][bool_series_re] = 1
+    df[&quot;required_education&quot;][~bool_series_re] = 0 
+    
+    return df
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>test_data = pd.read_csv(&quot;./data/test_set.csv&quot;, index_col = 0)
+test_data = test_data.iloc[:, 1:]
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>text_features_test = text_processing(test_data, condition = &quot;test&quot;)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>test_data = location_processing(test_data)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>OHE_features_test = OHE_processing(test_data, condition = &quot;test&quot;)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-output docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>processed_test = final_processing(test_data)
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>C:\Users\isaac\AppData\Local\Temp\ipykernel_16048\3958551616.py:15: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[&quot;company_profile&quot;][bool_series_cp] = 1
+C:\Users\isaac\AppData\Local\Temp\ipykernel_16048\3958551616.py:16: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[&quot;company_profile&quot;][~bool_series_cp] = 0
+C:\Users\isaac\AppData\Local\Temp\ipykernel_16048\3958551616.py:19: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[&quot;required_education&quot;][bool_series_re] = 1
+C:\Users\isaac\AppData\Local\Temp\ipykernel_16048\3958551616.py:20: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[&quot;required_education&quot;][~bool_series_re] = 0
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>processed_test = pd.concat([text_features_test, OHE_features_test, processed_test], axis = 1)
+</pre></div>
+</div>
+</div>
+</div>
+<p>We will choose the columns that we selected from feature selection.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>train_features = pd.read_csv(&quot;./data/final_feature_matrix.csv&quot;, index_col = 0)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>final_feature_matrix_test = processed_test.loc[:, train_features.columns]
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>final_feature_matrix_test
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>administr_desc</th>
+      <th>answer_desc</th>
+      <th>assist_desc</th>
+      <th>bill_desc</th>
+      <th>call_desc</th>
+      <th>cash_desc</th>
+      <th>desir_desc</th>
+      <th>duti_desc</th>
+      <th>earn_desc</th>
+      <th>entri_desc</th>
+      <th>...</th>
+      <th>industry_Accounting</th>
+      <th>industry_Leisure, Travel &amp; Tourism</th>
+      <th>industry_NAN</th>
+      <th>industry_Oil &amp; Energy</th>
+      <th>company_profile</th>
+      <th>telecommuting</th>
+      <th>has_company_logo</th>
+      <th>has_questions</th>
+      <th>required_education</th>
+      <th>fraudulent</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.044915</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.054131</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>0.211551</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.057114</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>3571</th>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>3572</th>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>3573</th>
+      <td>0.000000</td>
+      <td>0.142424</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.072183</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>3574</th>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>3575</th>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.035608</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.053655</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>0</td>
+    </tr>
+  </tbody>
+</table>
+<p>3576 rows × 86 columns</p>
+</div></div></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>final_feature_matrix_test.to_csv(&quot;./data/final_feature_matrix_test.csv&quot;)
+</pre></div>
+</div>
+</div>
+</div>
 </div>
 
     <script type="text/x-thebe-config">

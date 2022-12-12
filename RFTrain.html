@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Summary &#8212; Classifying Fake Job Posting Using Machine Learning Algorithm</title>
+    <title>Random Forest Result: Training Dataset &#8212; Classifying Fake Job Posting Using Machine Learning Algorithm</title>
     
   <link href="_static/css/theme.css" rel="stylesheet">
   <link href="_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
@@ -51,8 +51,7 @@
     <script async="async" src="_static/sphinx-thebe.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Feature Selection" href="featureselection.html" />
-    <link rel="prev" title="Label Encoding Vs. One Hot Encoding" href="OHE.html" />
+    <link rel="prev" title="Tuning the Hyperparameters of the Random Forest Model" href="TuningHPRF.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
     
@@ -123,22 +122,22 @@
   Data Preprocessing &amp; Feature Engineering
  </span>
 </p>
-<ul class="current nav bd-sidenav">
+<ul class="nav bd-sidenav">
  <li class="toctree-l1">
   <a class="reference internal" href="dataprocess.html">
    Data Cleaning
   </a>
  </li>
- <li class="toctree-l1 current active has-children">
+ <li class="toctree-l1 has-children">
   <a class="reference internal" href="featurescreate.html">
    Feature Creation
   </a>
-  <input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/>
+  <input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/>
   <label for="toctree-checkbox-1">
    <i class="fas fa-chevron-down">
    </i>
   </label>
-  <ul class="current">
+  <ul>
    <li class="toctree-l2">
     <a class="reference internal" href="FT.html">
      Creating Features from the Description
@@ -154,8 +153,8 @@
      Label Encoding Vs. One Hot Encoding
     </a>
    </li>
-   <li class="toctree-l2 current active">
-    <a class="current reference internal" href="#">
+   <li class="toctree-l2">
+    <a class="reference internal" href="summary.html">
      Summary
     </a>
    </li>
@@ -194,29 +193,29 @@
   Making Machine Learning Prediction
  </span>
 </p>
-<ul class="nav bd-sidenav">
+<ul class="current nav bd-sidenav">
  <li class="toctree-l1">
   <a class="reference internal" href="processtest.html">
    Processing The Test Dataset
   </a>
  </li>
- <li class="toctree-l1 has-children">
+ <li class="toctree-l1 current active has-children">
   <a class="reference internal" href="RF.html">
    Random Forest
   </a>
-  <input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/>
+  <input checked="" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/>
   <label for="toctree-checkbox-3">
    <i class="fas fa-chevron-down">
    </i>
   </label>
-  <ul>
+  <ul class="current">
    <li class="toctree-l2">
     <a class="reference internal" href="TuningHPRF.html">
      Tuning the Hyperparameters of the Random Forest Model
     </a>
    </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="RFTrain.html">
+   <li class="toctree-l2 current active">
+    <a class="current reference internal" href="#">
      Random Forest Result: Training Dataset
     </a>
    </li>
@@ -263,7 +262,7 @@
         <!-- ipynb file if we had a myst markdown file -->
         
         <!-- Download raw file -->
-        <a class="dropdown-buttons" href="_sources/summary.ipynb"><button type="button"
+        <a class="dropdown-buttons" href="_sources/RFTrain.ipynb"><button type="button"
                 class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
                 data-placement="left">.ipynb</button></a>
         <!-- Download PDF via print -->
@@ -283,7 +282,7 @@
                 data-toggle="tooltip" data-placement="left" title="Source repository"><i
                     class="fab fa-github"></i>repository</button></a>
         <a class="issues-button"
-            href="https://github.com/executablebooks/jupyter-book/issues/new?title=Issue%20on%20page%20%2Fsummary.html&body=Your%20issue%20content%20here."><button
+            href="https://github.com/executablebooks/jupyter-book/issues/new?title=Issue%20on%20page%20%2FRFTrain.html&body=Your%20issue%20content%20here."><button
                 type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
                 title="Open an issue"><i class="fas fa-lightbulb"></i>open issue</button></a>
         
@@ -304,7 +303,7 @@
         aria-label="Launch interactive content"><i class="fas fa-rocket"></i></button>
     <div class="dropdown-buttons">
         
-        <a class="binder-button" href="https://mybinder.org/v2/gh/executablebooks/jupyter-book/master?urlpath=tree/docs/summary.ipynb"><button type="button"
+        <a class="binder-button" href="https://mybinder.org/v2/gh/executablebooks/jupyter-book/master?urlpath=tree/docs/RFTrain.ipynb"><button type="button"
                 class="btn btn-secondary topbarbtn" title="Launch Binder" data-toggle="tooltip"
                 data-placement="left"><img class="binder-button-logo"
                     src="_static/images/logo_binder.svg"
@@ -328,7 +327,7 @@
         <div class="col-12 col-md-9 pl-md-3 pr-md-0">
             <!-- Table of contents that is only displayed when printing the page -->
             <div id="jb-print-docs-body" class="onlyprint">
-                <h1>Summary</h1>
+                <h1>Random Forest Result: Training Dataset</h1>
                 <!-- Table of contents -->
                 <div id="print-main-content">
                     <div id="jb-print-toc">
@@ -339,12 +338,18 @@
             
               <div>
                 
-  <div class="tex2jax_ignore mathjax_ignore section" id="summary">
-<h1>Summary<a class="headerlink" href="#summary" title="Permalink to this headline">¶</a></h1>
-<p>This is a summary of how we will preprocess each column in the dataset. You can find the complete coding of this preprocessing <a class="reference internal" href="Pipeline.html"><span class="doc std std-doc">here</span></a>.</p>
-<div class="cell tag_hide-output docutils container">
+  <div class="tex2jax_ignore mathjax_ignore section" id="random-forest-result-training-dataset">
+<h1>Random Forest Result: Training Dataset<a class="headerlink" href="#random-forest-result-training-dataset" title="Permalink to this headline">¶</a></h1>
+<p>In this section, we will fit the random forest model to our training dataset and see its performance. We will use the tuned hyperparameters in the previous <a class="reference internal" href="TuningHPRF.html"><span class="doc std std-doc">section</span></a>.</p>
+<div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import pandas as pd 
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from sklearn.ensemble import RandomForestClassifier
+import matplotlib.pyplot as plt
+from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
+from sklearn.metrics import classification_report
+import numpy as np 
+import pandas as pd 
+import pickle
 </pre></div>
 </div>
 </div>
@@ -352,17 +357,96 @@
 <div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
 <span class="ne">ModuleNotFoundError</span><span class="g g-Whitespace">                       </span>Traceback (most recent call last)
 <span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">line</span> <span class="mi">1</span>
-<span class="ne">----&gt; </span><span class="mi">1</span> <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span> 
+<span class="ne">----&gt; </span><span class="mi">1</span> <span class="kn">from</span> <span class="nn">sklearn.ensemble</span> <span class="kn">import</span> <span class="n">RandomForestClassifier</span>
+<span class="g g-Whitespace">      </span><span class="mi">2</span> <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="g g-Whitespace">      </span><span class="mi">3</span> <span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">confusion_matrix</span><span class="p">,</span> <span class="n">ConfusionMatrixDisplay</span>
 
-<span class="ne">ModuleNotFoundError</span>: No module named &#39;pandas&#39;
+<span class="ne">ModuleNotFoundError</span>: No module named &#39;sklearn&#39;
 </pre></div>
 </div>
 </div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>train_data = pd.read_csv(&quot;./data/train_set.csv&quot;)
-train_data.head()
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>feature_matrix_train = pd.read_csv(&quot;./data/final_feature_matrix.csv&quot;, index_col = 0)
+X = feature_matrix_train.drop(&quot;fraudulent&quot;, axis = 1).values
+y = feature_matrix_train.fraudulent.values
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rf_model = RandomForestClassifier(criterion = &quot;gini&quot;,
+                                  max_depth = 35,
+                                  max_features = 24,
+                                  n_estimators = 300,
+                                  class_weight = {0:1, 1:1.6}
+                                 )
+rf_model.fit(X,y)
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>RandomForestClassifier(class_weight={0: 1, 1: 1.6}, max_depth=35,
+                       max_features=24, n_estimators=300)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>y_predict =rf_model.predict(X)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>cm = confusion_matrix(y, y_predict, labels=rf_model.classes_)
+disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=rf_model.classes_)
+disp.plot()
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;sklearn.metrics._plot.confusion_matrix.ConfusionMatrixDisplay at 0x2144ecb7370&gt;
+</pre></div>
+</div>
+<img alt="_images/RFTrain_6_1.png" src="_images/RFTrain_6_1.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>print(classification_report(y, y_predict))
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>              precision    recall  f1-score   support
+
+           0       1.00      1.00      1.00     13611
+           1       1.00      0.96      0.98       693
+
+    accuracy                           1.00     14304
+   macro avg       1.00      0.98      0.99     14304
+weighted avg       1.00      1.00      1.00     14304
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>feature_name = feature_matrix_train.drop(&quot;fraudulent&quot;, axis = 1).columns
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>importances_df = pd.DataFrame({&quot;feature_names&quot; : feature_name, 
+                               &quot;importances&quot; : rf_model.feature_importances_})
+importances_df.sort_values(&quot;importances&quot;, ascending = False).reset_index(drop = True)[0:10]
 </pre></div>
 </div>
 </div>
@@ -385,157 +469,73 @@ train_data.head()
   <thead>
     <tr style="text-align: right;">
       <th></th>
-      <th>Unnamed: 0.1</th>
-      <th>Unnamed: 0</th>
-      <th>job_id</th>
-      <th>title</th>
-      <th>location</th>
-      <th>department</th>
-      <th>salary_range</th>
-      <th>company_profile</th>
-      <th>description</th>
-      <th>requirements</th>
-      <th>benefits</th>
-      <th>telecommuting</th>
-      <th>has_company_logo</th>
-      <th>has_questions</th>
-      <th>employment_type</th>
-      <th>required_experience</th>
-      <th>required_education</th>
-      <th>industry</th>
-      <th>function</th>
-      <th>fraudulent</th>
+      <th>feature_names</th>
+      <th>importances</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <th>0</th>
-      <td>0</td>
-      <td>7530</td>
-      <td>7531</td>
-      <td>Contact Center Representatives</td>
-      <td>US, VA, Virginia Beach</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>Tidewater Finance Co. was established in 1992 ...</td>
-      <td>tidewat financ compani locat virginia beach va...</td>
-      <td>The position requires the following qualificat...</td>
-      <td>Our company offers a competitive salary plus B...</td>
-      <td>0</td>
-      <td>1</td>
-      <td>0</td>
-      <td>Full-time</td>
-      <td>Entry level</td>
-      <td>Unspecified</td>
-      <td>Financial Services</td>
-      <td>Customer Service</td>
-      <td>0</td>
+      <td>company_profile</td>
+      <td>0.077765</td>
     </tr>
     <tr>
       <th>1</th>
-      <td>1</td>
-      <td>129</td>
-      <td>130</td>
-      <td>Customer Service Associate</td>
-      <td>US, TX, Dallas</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>Novitex Enterprise Solutions, formerly Pitney ...</td>
-      <td>custom servic associ base dalla tx right candi...</td>
-      <td>QualificationsMinimum of 1 year customer servi...</td>
-      <td>NaN</td>
-      <td>0</td>
-      <td>1</td>
-      <td>0</td>
-      <td>Full-time</td>
-      <td>Entry level</td>
-      <td>High School or equivalent</td>
-      <td>Telecommunications</td>
-      <td>Customer Service</td>
-      <td>0</td>
+      <td>has_company_logo</td>
+      <td>0.047659</td>
     </tr>
     <tr>
       <th>2</th>
-      <td>2</td>
-      <td>4640</td>
-      <td>4641</td>
-      <td>Automated Test Analyst</td>
-      <td>NZ, , Auckland</td>
-      <td>Permanent</td>
-      <td>NaN</td>
-      <td>SilverStripe CMS &amp;amp; Framework is an open so...</td>
-      <td>look dedic passion softwar test analyst team p...</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>0</td>
-      <td>1</td>
-      <td>1</td>
-      <td>Full-time</td>
-      <td>Mid-Senior level</td>
-      <td>NaN</td>
-      <td>Information Technology and Services</td>
-      <td>NaN</td>
-      <td>0</td>
+      <td>industry_Oil &amp; Energy</td>
+      <td>0.046337</td>
     </tr>
     <tr>
       <th>3</th>
-      <td>3</td>
-      <td>402</td>
-      <td>403</td>
-      <td>Inside Sales Professional-Omaha</td>
-      <td>US, NE, Omaha</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>ABC Supply Co., Inc. is the nation’s largest w...</td>
-      <td>sale repres provid assist custom purchas mater...</td>
-      <td>As a Sales Representative, you must have the a...</td>
-      <td>Your benefits package as a Sales Representativ...</td>
-      <td>0</td>
-      <td>1</td>
-      <td>0</td>
-      <td>Full-time</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>Building Materials</td>
-      <td>Sales</td>
-      <td>0</td>
+      <td>earn_desc</td>
+      <td>0.034458</td>
     </tr>
     <tr>
       <th>4</th>
-      <td>4</td>
-      <td>13218</td>
-      <td>13219</td>
-      <td>Content Marketing/SEO Manager</td>
-      <td>US, CA, Los Angeles</td>
-      <td>Marketing</td>
-      <td>NaN</td>
-      <td>MeUndies is a lifestyle brand that is transfor...</td>
-      <td>meundi lifestyl brand transform way peopl perc...</td>
-      <td>REQUIREMENTS/QUALIFICATIONS/PERSONAL ATTRIBUTE...</td>
-      <td>WHY MEUNDIES?We're a fast-growing, VC-backed c...</td>
-      <td>0</td>
-      <td>1</td>
-      <td>0</td>
-      <td>Full-time</td>
-      <td>Mid-Senior level</td>
-      <td>Bachelor's Degree</td>
-      <td>Internet</td>
-      <td>Marketing</td>
-      <td>0</td>
+      <td>function_Administrative</td>
+      <td>0.032784</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>time_desc</td>
+      <td>0.030940</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>requir_req</td>
+      <td>0.027134</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>per_desc</td>
+      <td>0.024678</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>skill_desc</td>
+      <td>0.020639</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>posit_desc</td>
+      <td>0.020025</td>
     </tr>
   </tbody>
 </table>
 </div></div></div>
 </div>
-<ol class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">job_id</span></code> : Eliminated.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">title</span></code>, <code class="docutils literal notranslate"><span class="pre">description</span></code>, <code class="docutils literal notranslate"><span class="pre">requirements</span></code>,<code class="docutils literal notranslate"><span class="pre">benefits</span></code>: Word Feature Extraction. Click <a class="reference internal" href="FT.html"><span class="doc std std-doc">here</span></a> for more detailed explanation.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">location</span></code>: Only state will be extracted and used as features using OHE. Click <a class="reference internal" href="PF.html"><span class="doc std std-doc">here</span></a> for more detailed information.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">department</span></code>, <code class="docutils literal notranslate"><span class="pre">salary_range</span></code>: Eliminated. Click <a class="reference internal" href="PF.html"><span class="doc std std-doc">here</span></a> for more detailed information.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">company_profile</span></code>, <code class="docutils literal notranslate"><span class="pre">required_education</span></code>: Binarized as NA (1) and NON-NA (0). Click <a class="reference internal" href="PF.html"><span class="doc std std-doc">here</span></a> for more detailed information.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">telecommuting</span></code>, <code class="docutils literal notranslate"><span class="pre">has_company_logo</span></code>,<code class="docutils literal notranslate"><span class="pre">has_questions</span></code>: Already binarized. No preprocessing needed.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">employment_type</span></code>, <code class="docutils literal notranslate"><span class="pre">required_experience</span></code>, <code class="docutils literal notranslate"><span class="pre">industry</span></code>, <code class="docutils literal notranslate"><span class="pre">function</span></code>: One Hot Encoded. Click <a class="reference internal" href="OHE.html"><span class="doc std std-doc">here</span></a> for more detailed information.</p></li>
-</ol>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>with open(&#39;./pickle/rf_model.pkl&#39;, &#39;wb&#39;) as f:
+        pickle.dump(rf_model, f)
+</pre></div>
+</div>
+</div>
+</div>
 </div>
 
     <script type="text/x-thebe-config">
@@ -563,19 +563,12 @@ train_data.head()
             
                 <!-- Previous / next buttons -->
 <div class='prev-next-area'> 
-    <a class='left-prev' id="prev-link" href="OHE.html" title="previous page">
+    <a class='left-prev' id="prev-link" href="TuningHPRF.html" title="previous page">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
             <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">Label Encoding Vs. One Hot Encoding</p>
+            <p class="prev-next-title">Tuning the Hyperparameters of the Random Forest Model</p>
         </div>
-    </a>
-    <a class='right-next' id="next-link" href="featureselection.html" title="next page">
-    <div class="prev-next-info">
-        <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Feature Selection</p>
-    </div>
-    <i class="fas fa-angle-right"></i>
     </a>
 </div>
             
