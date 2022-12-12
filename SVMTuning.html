@@ -51,6 +51,7 @@
     <script async="async" src="_static/sphinx-thebe.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="SVM Result: Train Dataset" href="SVMTrain.html" />
     <link rel="prev" title="SVM" href="SVM.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
@@ -241,6 +242,16 @@
      Tuning the Hyperparameters of SVM
     </a>
    </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="SVMTrain.html">
+     SVM Result: Train Dataset
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="SVMTest.html">
+     SVM Result: Test Dataset
+    </a>
+   </li>
   </ul>
  </li>
 </ul>
@@ -342,6 +353,29 @@
         <!-- Table of contents -->
         <div class="d-none d-md-block col-md-2 bd-toc show noprint">
             
+            <div class="tocsection onthispage pt-5 pb-3">
+                <i class="fas fa-list"></i> Contents
+            </div>
+            <nav id="bd-toc-nav" aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#folds-cross-validation-for-accuracy-using-grid-search-algorithm">
+   5 Folds Cross Validation For Accuracy Using Grid Search Algorithm
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#folds-cross-validation-for-roc-auc-using-grid-search-algorithm">
+   5 Folds Cross Validation For ROC AUC Using Grid Search Algorithm
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#result-summary">
+   Result Summary
+  </a>
+ </li>
+</ul>
+
+            </nav>
         </div>
     </div>
 </div>
@@ -354,6 +388,29 @@
                 <div id="print-main-content">
                     <div id="jb-print-toc">
                         
+                        <div>
+                            <h2> Contents </h2>
+                        </div>
+                        <nav aria-label="Page">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#folds-cross-validation-for-accuracy-using-grid-search-algorithm">
+   5 Folds Cross Validation For Accuracy Using Grid Search Algorithm
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#folds-cross-validation-for-roc-auc-using-grid-search-algorithm">
+   5 Folds Cross Validation For ROC AUC Using Grid Search Algorithm
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#result-summary">
+   Result Summary
+  </a>
+ </li>
+</ul>
+
+                        </nav>
                     </div>
                 </div>
             </div>
@@ -362,6 +419,233 @@
                 
   <div class="tex2jax_ignore mathjax_ignore section" id="tuning-the-hyperparameters-of-svm">
 <h1>Tuning the Hyperparameters of SVM<a class="headerlink" href="#tuning-the-hyperparameters-of-svm" title="Permalink to this headline">¶</a></h1>
+<p>We have two parameters to tune for the SVM model: cost and gamma.</p>
+<ol class="simple">
+<li><p>Cost is a parameter that adjusts the level of soft margin.</p></li>
+<li><p>Gamma is the one that adjusts the level of curvature of our decision boundaries.</p></li>
+</ol>
+<p>We used the <strong>radial kernel function</strong> since it appeared to work the best. In order to tune the parameters, we used 5-fold cross-validation, but since we needed to find the best combination of these two parameters, we used a <strong>grid-search algorithm</strong> to find the best combination.</p>
+<p>We will perform 5 fold Cross Validation twice - one for accuracy and another one for area under the ROC - so that we can find the combination that will give us the most balanced result.</p>
+<div class="section" id="folds-cross-validation-for-accuracy-using-grid-search-algorithm">
+<h2>5 Folds Cross Validation For Accuracy Using Grid Search Algorithm<a class="headerlink" href="#folds-cross-validation-for-accuracy-using-grid-search-algorithm" title="Permalink to this headline">¶</a></h2>
+<div class="cell tag_hide-output docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from sklearn.model_selection import GridSearchCV
+from sklearn.svm import SVC
+import numpy as np 
+import pandas as pd 
+import pickle
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
+<span class="ne">ModuleNotFoundError</span><span class="g g-Whitespace">                       </span>Traceback (most recent call last)
+<span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">line</span> <span class="mi">1</span>
+<span class="ne">----&gt; </span><span class="mi">1</span> <span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">GridSearchCV</span>
+<span class="g g-Whitespace">      </span><span class="mi">2</span> <span class="kn">from</span> <span class="nn">sklearn.svm</span> <span class="kn">import</span> <span class="n">SVC</span>
+<span class="g g-Whitespace">      </span><span class="mi">3</span> <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span> 
+
+<span class="ne">ModuleNotFoundError</span>: No module named &#39;sklearn&#39;
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>feature_matrix_train = pd.read_csv(&quot;./data/final_feature_matrix.csv&quot;, index_col = 0)
+X = feature_matrix_train.drop(&quot;fraudulent&quot;, axis = 1).values
+y = feature_matrix_train.fraudulent.values
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-output docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>param_grid_acc = {&#39;C&#39;: [0.01, 0.1, 1, 10, 100], 
+              &#39;gamma&#39;: [10, 1, 0.1, 0.01, 0.001],
+              &#39;kernel&#39;: [&#39;rbf&#39;,&#39;poly&#39;]} 
+
+grid_acc = GridSearchCV(SVC(), param_grid_acc)
+grid_acc.fit(X, y)
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>GridSearchCV(estimator=SVC(),
+             param_grid={&#39;C&#39;: [0.01, 0.1, 1, 10, 100],
+                         &#39;gamma&#39;: [10, 1, 0.1, 0.01, 0.001],
+                         &#39;kernel&#39;: [&#39;rbf&#39;, &#39;poly&#39;]})
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>dictionary_acc = grid_acc.cv_results_
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>print(grid_acc.best_params_)
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>{&#39;C&#39;: 10, &#39;gamma&#39;: 1, &#39;kernel&#39;: &#39;rbf&#39;}
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="folds-cross-validation-for-roc-auc-using-grid-search-algorithm">
+<h2>5 Folds Cross Validation For ROC AUC Using Grid Search Algorithm<a class="headerlink" href="#folds-cross-validation-for-roc-auc-using-grid-search-algorithm" title="Permalink to this headline">¶</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>param_grid_auc = {&#39;C&#39;: [0.01, 0.1, 1, 10, 100], 
+              &#39;gamma&#39;: [10, 1, 0.1, 0.01, 0.001],
+              &#39;kernel&#39;: [&#39;rbf&#39;, &#39;poly&#39;]} 
+
+grid_auc = GridSearchCV(SVC(), param_grid_auc, scoring = &quot;roc_auc&quot;)
+grid_auc.fit(X,y)
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>GridSearchCV(estimator=SVC(),
+             param_grid={&#39;C&#39;: [0.01, 0.1, 1, 10, 100],
+                         &#39;gamma&#39;: [10, 1, 0.1, 0.01, 0.001],
+                         &#39;kernel&#39;: [&#39;rbf&#39;, &#39;poly&#39;]},
+             scoring=&#39;roc_auc&#39;)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>dictionary_auc = grid_auc.cv_results_
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>print(grid_auc.best_params_)
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>{&#39;C&#39;: 1, &#39;gamma&#39;: 1, &#39;kernel&#39;: &#39;rbf&#39;}
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="result-summary">
+<h2>Result Summary<a class="headerlink" href="#result-summary" title="Permalink to this headline">¶</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>result_df = pd.DataFrame({&quot;C/gamma/kernel&quot; : dictionary_acc[&#39;params&#39;],
+                          &quot;Accuracy&quot; : dictionary_acc[&#39;mean_test_score&#39;],
+                         &quot;ROC_AUC&quot;: dictionary_auc[&#39;mean_test_score&#39;]})
+result_df.sort_values(&quot;Accuracy&quot;, ascending = False).reset_index(drop = True)[0:10]
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>C/gamma/kernel</th>
+      <th>Accuracy</th>
+      <th>ROC_AUC</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>{'C': 10, 'gamma': 1, 'kernel': 'rbf'}</td>
+      <td>0.973434</td>
+      <td>0.932281</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>{'C': 100, 'gamma': 0.1, 'kernel': 'rbf'}</td>
+      <td>0.973294</td>
+      <td>0.926156</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>{'C': 100, 'gamma': 1, 'kernel': 'rbf'}</td>
+      <td>0.971966</td>
+      <td>0.925867</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>{'C': 1, 'gamma': 1, 'kernel': 'poly'}</td>
+      <td>0.971756</td>
+      <td>0.918377</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>{'C': 0.1, 'gamma': 1, 'kernel': 'poly'}</td>
+      <td>0.971197</td>
+      <td>0.922597</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>{'C': 100, 'gamma': 0.1, 'kernel': 'poly'}</td>
+      <td>0.971197</td>
+      <td>0.922602</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>{'C': 10, 'gamma': 0.1, 'kernel': 'rbf'}</td>
+      <td>0.970638</td>
+      <td>0.926423</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>{'C': 1, 'gamma': 1, 'kernel': 'rbf'}</td>
+      <td>0.969869</td>
+      <td>0.933279</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>{'C': 10, 'gamma': 10, 'kernel': 'rbf'}</td>
+      <td>0.969729</td>
+      <td>0.924050</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>{'C': 100, 'gamma': 0.01, 'kernel': 'rbf'}</td>
+      <td>0.969379</td>
+      <td>0.913966</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<p>The combination of {C = 10, gamma = 1, kernel = ‘rbf’} gives the highest accuracy, while the combination of {C = 1, gamma =1, kernel = ‘rbf’} gives the highest AUC.</p>
+<p><strong>We will choose {C = 10, gamma = 1, kernel = ‘rbf’} as our final parameters for the SVM, since it has the most balanced score for both accuracy and ROC AUC.</strong></p>
+</div>
 </div>
 
     <script type="text/x-thebe-config">
@@ -395,6 +679,13 @@
             <p class="prev-next-subtitle">previous</p>
             <p class="prev-next-title">SVM</p>
         </div>
+    </a>
+    <a class='right-next' id="next-link" href="SVMTrain.html" title="next page">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">SVM Result: Train Dataset</p>
+    </div>
+    <i class="fas fa-angle-right"></i>
     </a>
 </div>
             

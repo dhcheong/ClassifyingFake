@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Feature Creation &#8212; Classifying Fake Job Posting Using Machine Learning Algorithm</title>
+    <title>SVM Result: Train Dataset &#8212; Classifying Fake Job Posting Using Machine Learning Algorithm</title>
     
   <link href="_static/css/theme.css" rel="stylesheet">
   <link href="_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
@@ -51,8 +51,8 @@
     <script async="async" src="_static/sphinx-thebe.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Creating Features from the Description" href="FT.html" />
-    <link rel="prev" title="Data Cleaning" href="dataprocess.html" />
+    <link rel="next" title="SVM Result: Test Dataset" href="SVMTest.html" />
+    <link rel="prev" title="Tuning the Hyperparameters of SVM" href="SVMTuning.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
     
@@ -123,17 +123,17 @@
   Data Preprocessing &amp; Feature Engineering
  </span>
 </p>
-<ul class="current nav bd-sidenav">
+<ul class="nav bd-sidenav">
  <li class="toctree-l1">
   <a class="reference internal" href="dataprocess.html">
    Data Cleaning
   </a>
  </li>
- <li class="toctree-l1 current active has-children">
-  <a class="current reference internal" href="#">
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="featurescreate.html">
    Feature Creation
   </a>
-  <input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/>
+  <input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/>
   <label for="toctree-checkbox-1">
    <i class="fas fa-chevron-down">
    </i>
@@ -194,7 +194,7 @@
   Making Machine Learning Prediction
  </span>
 </p>
-<ul class="nav bd-sidenav">
+<ul class="current nav bd-sidenav">
  <li class="toctree-l1">
   <a class="reference internal" href="processtest.html">
    Processing The Test Dataset
@@ -227,23 +227,23 @@
    </li>
   </ul>
  </li>
- <li class="toctree-l1 has-children">
+ <li class="toctree-l1 current active has-children">
   <a class="reference internal" href="SVM.html">
    SVM
   </a>
-  <input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/>
+  <input checked="" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/>
   <label for="toctree-checkbox-4">
    <i class="fas fa-chevron-down">
    </i>
   </label>
-  <ul>
+  <ul class="current">
    <li class="toctree-l2">
     <a class="reference internal" href="SVMTuning.html">
      Tuning the Hyperparameters of SVM
     </a>
    </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="SVMTrain.html">
+   <li class="toctree-l2 current active">
+    <a class="current reference internal" href="#">
      SVM Result: Train Dataset
     </a>
    </li>
@@ -295,7 +295,7 @@
         <!-- ipynb file if we had a myst markdown file -->
         
         <!-- Download raw file -->
-        <a class="dropdown-buttons" href="_sources/featurescreate.ipynb"><button type="button"
+        <a class="dropdown-buttons" href="_sources/SVMTrain.ipynb"><button type="button"
                 class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
                 data-placement="left">.ipynb</button></a>
         <!-- Download PDF via print -->
@@ -315,7 +315,7 @@
                 data-toggle="tooltip" data-placement="left" title="Source repository"><i
                     class="fab fa-github"></i>repository</button></a>
         <a class="issues-button"
-            href="https://github.com/executablebooks/jupyter-book/issues/new?title=Issue%20on%20page%20%2Ffeaturescreate.html&body=Your%20issue%20content%20here."><button
+            href="https://github.com/executablebooks/jupyter-book/issues/new?title=Issue%20on%20page%20%2FSVMTrain.html&body=Your%20issue%20content%20here."><button
                 type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
                 title="Open an issue"><i class="fas fa-lightbulb"></i>open issue</button></a>
         
@@ -336,7 +336,7 @@
         aria-label="Launch interactive content"><i class="fas fa-rocket"></i></button>
     <div class="dropdown-buttons">
         
-        <a class="binder-button" href="https://mybinder.org/v2/gh/executablebooks/jupyter-book/master?urlpath=tree/docs/featurescreate.ipynb"><button type="button"
+        <a class="binder-button" href="https://mybinder.org/v2/gh/executablebooks/jupyter-book/master?urlpath=tree/docs/SVMTrain.ipynb"><button type="button"
                 class="btn btn-secondary topbarbtn" title="Launch Binder" data-toggle="tooltip"
                 data-placement="left"><img class="binder-button-logo"
                     src="_static/images/logo_binder.svg"
@@ -360,7 +360,7 @@
         <div class="col-12 col-md-9 pl-md-3 pr-md-0">
             <!-- Table of contents that is only displayed when printing the page -->
             <div id="jb-print-docs-body" class="onlyprint">
-                <h1>Feature Creation</h1>
+                <h1>SVM Result: Train Dataset</h1>
                 <!-- Table of contents -->
                 <div id="print-main-content">
                     <div id="jb-print-toc">
@@ -371,14 +371,18 @@
             
               <div>
                 
-  <div class="tex2jax_ignore mathjax_ignore section" id="feature-creation">
-<h1>Feature Creation<a class="headerlink" href="#feature-creation" title="Permalink to this headline">¶</a></h1>
-<p>This section will focus on creating features from cleaned-text data by counting word frequency and some limitations regarding using such a method. Also, we will talk about how we should handle non-text columns in the data, especially the columns with categorical variables. Additionally, we will take closer look into our training dataset to see if we can create more helpful features other than given columns.</p>
-<p>First, we will load the data we cleaned on the previous page, and we will split this into train and test datasets. We split the dataset to ensure the test dataset does not influence when creating a pipeline. Technically, we are not supposed to know our test set before the completion of our pipeline. <strong>After we create the pipeline, we will apply the same pipeline we used for the train set to the test set to ensure both datasets have the same dimension.</strong>  Please refer to <a class="reference internal" href="Plan.html"><span class="doc std std-doc">here</span></a> if you want to know how I splited the dataset into train and test sets.</p>
-<div class="cell tag_hide-output docutils container">
+  <div class="tex2jax_ignore mathjax_ignore section" id="svm-result-train-dataset">
+<h1>SVM Result: Train Dataset<a class="headerlink" href="#svm-result-train-dataset" title="Permalink to this headline">¶</a></h1>
+<p>In this section, we will fit the SVM to our training dataset and see its performance. We will use the tuned hyperparameters in the previous <span class="xref myst">section</span>.</p>
+<div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import pandas as pd 
-from sklearn.model_selection import train_test_split
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from sklearn.svm import SVC
+import matplotlib.pyplot as plt
+from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
+from sklearn.metrics import classification_report
+import numpy as np 
+import pandas as pd 
+import pickle
 </pre></div>
 </div>
 </div>
@@ -386,41 +390,88 @@ from sklearn.model_selection import train_test_split
 <div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
 <span class="ne">ModuleNotFoundError</span><span class="g g-Whitespace">                       </span>Traceback (most recent call last)
 <span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">line</span> <span class="mi">1</span>
-<span class="ne">----&gt; </span><span class="mi">1</span> <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span> 
-<span class="g g-Whitespace">      </span><span class="mi">2</span> <span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">train_test_split</span>
+<span class="ne">----&gt; </span><span class="mi">1</span> <span class="kn">from</span> <span class="nn">sklearn.svm</span> <span class="kn">import</span> <span class="n">SVC</span>
+<span class="g g-Whitespace">      </span><span class="mi">2</span> <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="g g-Whitespace">      </span><span class="mi">3</span> <span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">confusion_matrix</span><span class="p">,</span> <span class="n">ConfusionMatrixDisplay</span>
 
-<span class="ne">ModuleNotFoundError</span>: No module named &#39;pandas&#39;
+<span class="ne">ModuleNotFoundError</span>: No module named &#39;sklearn&#39;
 </pre></div>
 </div>
 </div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>data = pd.read_csv(&quot;./data/cleaned_fake_job_postings.csv&quot;)
-y = data.iloc[:, -1]
-X = data.iloc[:, :-1]
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, random_state = 42, stratify = y)
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>feature_matrix_train = pd.read_csv(&quot;./data/final_feature_matrix.csv&quot;, index_col = 0)
+X = feature_matrix_train.drop(&quot;fraudulent&quot;, axis = 1).values
+y = feature_matrix_train.fraudulent.values
 </pre></div>
 </div>
 </div>
 </div>
-<p>Before we move on to the next step, we will create new dataframes for the train and test set and save these as csv to data folder. We will use the following code to do the work.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Resetting Index before we create new csv file for train and test</span>
-<span class="n">X_train</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">inplace</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">drop</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
-<span class="n">y_train</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">inplace</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">drop</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
-<span class="n">X_test</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">inplace</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">drop</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
-<span class="n">y_test</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">inplace</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">drop</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>svm_model = SVC(C = 10,
+                gamma = 1,
+                kernel = &#39;rbf&#39;)
 
-<span class="c1"># Combining X and y (which is just fraudulent column) </span>
-<span class="n">X_train</span><span class="p">[</span><span class="s2">&quot;fraudulent&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">y_train</span>
-<span class="n">X_test</span><span class="p">[</span><span class="s2">&quot;fraudulent&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">y_test</span>
-
-<span class="c1"># Save the combined dataframe to csv</span>
-<span class="n">X_train</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s2">&quot;./data/train_set.csv&quot;</span><span class="p">)</span>
-<span class="n">X_test</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s2">&quot;./data/test_set.csv&quot;</span><span class="p">)</span>
+svm_model.fit(X, y)
 </pre></div>
 </div>
-<div class="toctree-wrapper compound">
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>SVC(C=10, gamma=1)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>y_predict =svm_model.predict(X)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>cm = confusion_matrix(y, y_predict, labels=svm_model.classes_)
+disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=svm_model.classes_)
+disp.plot()
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;sklearn.metrics._plot.confusion_matrix.ConfusionMatrixDisplay at 0x1cbadd350a0&gt;
+</pre></div>
+</div>
+<img alt="_images/SVMTrain_6_1.png" src="_images/SVMTrain_6_1.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>print(classification_report(y, y_predict))
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>              precision    recall  f1-score   support
+
+           0       0.99      1.00      0.99     13611
+           1       0.99      0.79      0.88       693
+
+    accuracy                           0.99     14304
+   macro avg       0.99      0.89      0.94     14304
+weighted avg       0.99      0.99      0.99     14304
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>with open(&#39;./pickle/svm_model.pkl&#39;, &#39;wb&#39;) as f:
+        pickle.dump(svm_model, f)
+</pre></div>
+</div>
+</div>
 </div>
 </div>
 
@@ -449,17 +500,17 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, rando
             
                 <!-- Previous / next buttons -->
 <div class='prev-next-area'> 
-    <a class='left-prev' id="prev-link" href="dataprocess.html" title="previous page">
+    <a class='left-prev' id="prev-link" href="SVMTuning.html" title="previous page">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
             <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">Data Cleaning</p>
+            <p class="prev-next-title">Tuning the Hyperparameters of SVM</p>
         </div>
     </a>
-    <a class='right-next' id="next-link" href="FT.html" title="next page">
+    <a class='right-next' id="next-link" href="SVMTest.html" title="next page">
     <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Creating Features from the Description</p>
+        <p class="prev-next-title">SVM Result: Test Dataset</p>
     </div>
     <i class="fas fa-angle-right"></i>
     </a>
