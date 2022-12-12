@@ -26,6 +26,7 @@ from sklearn.preprocessing import StandardScaler
 from hyperopt import tpe, hp, fmin, STATUS_OK,Trials
 from hyperopt.pyll.base import scope
 from hyperopt import Trials 
+from sklearn.utils import shuffle
 ------------------
 
 [0;31m---------------------------------------------------------------------------[0m
