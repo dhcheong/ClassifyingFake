@@ -34,3 +34,5 @@ parts:
   - file: SVM
     sections:
     - file: SVMTuning
+    - file: SVMTrain
+    - file: SVMTest
