@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Random Forest Result: Training Dataset &#8212; Classifying Fake Job Posting Using Machine Learning Algorithm</title>
+    <title>Conclusion &#8212; Classifying Fake Job Posting Using Machine Learning Algorithm</title>
     
   <link href="_static/css/theme.css" rel="stylesheet">
   <link href="_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
@@ -51,8 +51,6 @@
     <script async="async" src="_static/sphinx-thebe.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Random Forest Result: Test Dataset" href="RFTest.html" />
-    <link rel="prev" title="Tuning the Hyperparameters of the Random Forest Model" href="TuningHPRF.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
     
@@ -194,29 +192,29 @@
   Making Machine Learning Prediction
  </span>
 </p>
-<ul class="current nav bd-sidenav">
+<ul class="nav bd-sidenav">
  <li class="toctree-l1">
   <a class="reference internal" href="processtest.html">
    Processing The Test Dataset
   </a>
  </li>
- <li class="toctree-l1 current active has-children">
+ <li class="toctree-l1 has-children">
   <a class="reference internal" href="RF.html">
    Random Forest
   </a>
-  <input checked="" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/>
+  <input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/>
   <label for="toctree-checkbox-3">
    <i class="fas fa-chevron-down">
    </i>
   </label>
-  <ul class="current">
+  <ul>
    <li class="toctree-l2">
     <a class="reference internal" href="TuningHPRF.html">
      Tuning the Hyperparameters of the Random Forest Model
     </a>
    </li>
-   <li class="toctree-l2 current active">
-    <a class="current reference internal" href="#">
+   <li class="toctree-l2">
+    <a class="reference internal" href="RFTrain.html">
      Random Forest Result: Training Dataset
     </a>
    </li>
@@ -295,7 +293,7 @@
         <!-- ipynb file if we had a myst markdown file -->
         
         <!-- Download raw file -->
-        <a class="dropdown-buttons" href="_sources/RFTrain.ipynb"><button type="button"
+        <a class="dropdown-buttons" href="_sources/Conclusion.ipynb"><button type="button"
                 class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
                 data-placement="left">.ipynb</button></a>
         <!-- Download PDF via print -->
@@ -315,7 +313,7 @@
                 data-toggle="tooltip" data-placement="left" title="Source repository"><i
                     class="fab fa-github"></i>repository</button></a>
         <a class="issues-button"
-            href="https://github.com/executablebooks/jupyter-book/issues/new?title=Issue%20on%20page%20%2FRFTrain.html&body=Your%20issue%20content%20here."><button
+            href="https://github.com/executablebooks/jupyter-book/issues/new?title=Issue%20on%20page%20%2FConclusion.html&body=Your%20issue%20content%20here."><button
                 type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
                 title="Open an issue"><i class="fas fa-lightbulb"></i>open issue</button></a>
         
@@ -336,7 +334,7 @@
         aria-label="Launch interactive content"><i class="fas fa-rocket"></i></button>
     <div class="dropdown-buttons">
         
-        <a class="binder-button" href="https://mybinder.org/v2/gh/executablebooks/jupyter-book/master?urlpath=tree/docs/RFTrain.ipynb"><button type="button"
+        <a class="binder-button" href="https://mybinder.org/v2/gh/executablebooks/jupyter-book/master?urlpath=tree/docs/Conclusion.ipynb"><button type="button"
                 class="btn btn-secondary topbarbtn" title="Launch Binder" data-toggle="tooltip"
                 data-placement="left"><img class="binder-button-logo"
                     src="_static/images/logo_binder.svg"
@@ -359,8 +357,18 @@
             <nav id="bd-toc-nav" aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#feature-importance">
-   Feature Importance
+  <a class="reference internal nav-link" href="#improvement">
+   Improvement
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#drawback">
+   Drawback
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#concluding-remark">
+   Concluding Remark
   </a>
  </li>
 </ul>
@@ -373,7 +381,7 @@
         <div class="col-12 col-md-9 pl-md-3 pr-md-0">
             <!-- Table of contents that is only displayed when printing the page -->
             <div id="jb-print-docs-body" class="onlyprint">
-                <h1>Random Forest Result: Training Dataset</h1>
+                <h1>Conclusion</h1>
                 <!-- Table of contents -->
                 <div id="print-main-content">
                     <div id="jb-print-toc">
@@ -384,8 +392,18 @@
                         <nav aria-label="Page">
                             <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#feature-importance">
-   Feature Importance
+  <a class="reference internal nav-link" href="#improvement">
+   Improvement
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#drawback">
+   Drawback
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#concluding-remark">
+   Concluding Remark
   </a>
  </li>
 </ul>
@@ -397,214 +415,18 @@
             
               <div>
                 
-  <div class="tex2jax_ignore mathjax_ignore section" id="random-forest-result-training-dataset">
-<h1>Random Forest Result: Training Dataset<a class="headerlink" href="#random-forest-result-training-dataset" title="Permalink to this headline">¶</a></h1>
-<p>In this section, we will fit the random forest model to our training dataset and see its performance. We will use the tuned hyperparameters in the previous <a class="reference internal" href="TuningHPRF.html"><span class="doc std std-doc">section</span></a>.</p>
-<div class="cell tag_hide-output docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from sklearn.ensemble import RandomForestClassifier
-import matplotlib.pyplot as plt
-from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
-from sklearn.metrics import classification_report
-import numpy as np 
-import pandas as pd 
-import pickle
-</pre></div>
+  <div class="tex2jax_ignore mathjax_ignore section" id="conclusion">
+<h1>Conclusion<a class="headerlink" href="#conclusion" title="Permalink to this headline">¶</a></h1>
+<p>This section will summarize the project by presenting improvements and drawbacks compared to the previous work.</p>
+<div class="section" id="improvement">
+<h2>Improvement<a class="headerlink" href="#improvement" title="Permalink to this headline">¶</a></h2>
 </div>
+<div class="section" id="drawback">
+<h2>Drawback<a class="headerlink" href="#drawback" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="cell_output docutils container">
-<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
-<span class="ne">ModuleNotFoundError</span><span class="g g-Whitespace">                       </span>Traceback (most recent call last)
-<span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">line</span> <span class="mi">1</span>
-<span class="ne">----&gt; </span><span class="mi">1</span> <span class="kn">from</span> <span class="nn">sklearn.ensemble</span> <span class="kn">import</span> <span class="n">RandomForestClassifier</span>
-<span class="g g-Whitespace">      </span><span class="mi">2</span> <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-<span class="g g-Whitespace">      </span><span class="mi">3</span> <span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">confusion_matrix</span><span class="p">,</span> <span class="n">ConfusionMatrixDisplay</span>
-
-<span class="ne">ModuleNotFoundError</span>: No module named &#39;sklearn&#39;
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>feature_matrix_train = pd.read_csv(&quot;./data/final_feature_matrix.csv&quot;, index_col = 0)
-X = feature_matrix_train.drop(&quot;fraudulent&quot;, axis = 1).values
-y = feature_matrix_train.fraudulent.values
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rf_model = RandomForestClassifier(criterion = &quot;gini&quot;,
-                                  max_depth = 35,
-                                  max_features = 24,
-                                  n_estimators = 300,
-                                  class_weight = {0:1, 1:1.6}
-                                 )
-rf_model.fit(X,y)
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>RandomForestClassifier(class_weight={0: 1, 1: 1.6}, max_depth=35,
-                       max_features=24, n_estimators=300)
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>y_predict =rf_model.predict(X)
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>cm = confusion_matrix(y, y_predict, labels=rf_model.classes_)
-disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=rf_model.classes_)
-disp.plot()
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;sklearn.metrics._plot.confusion_matrix.ConfusionMatrixDisplay at 0x2144ecb7370&gt;
-</pre></div>
-</div>
-<img alt="_images/RFTrain_6_1.png" src="_images/RFTrain_6_1.png" />
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>print(classification_report(y, y_predict))
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>              precision    recall  f1-score   support
-
-           0       1.00      1.00      1.00     13611
-           1       1.00      0.96      0.98       693
-
-    accuracy                           1.00     14304
-   macro avg       1.00      0.98      0.99     14304
-weighted avg       1.00      1.00      1.00     14304
-</pre></div>
-</div>
-</div>
-</div>
-<p>The trained model has 99.78% accuracy and 95.53% recall on the training set. The result seems satisfying. Compared to the model in the previous work, we can see a massive improvement in accuracy (97.99% to 99.78%) and recall (70.28% to 95.53%). However, the result still implies that our model could have been overfitted.</p>
-<div class="section" id="feature-importance">
-<h2>Feature Importance<a class="headerlink" href="#feature-importance" title="Permalink to this headline">¶</a></h2>
-<p>The one convenient part of using the random forest model is that we can easily observe the feature importance.</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>feature_name = feature_matrix_train.drop(&quot;fraudulent&quot;, axis = 1).columns
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>importances_df = pd.DataFrame({&quot;feature_names&quot; : feature_name, 
-                               &quot;importances&quot; : rf_model.feature_importances_})
-importances_df.sort_values(&quot;importances&quot;, ascending = False).reset_index(drop = True)[0:10]
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_html"><div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>feature_names</th>
-      <th>importances</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>0</th>
-      <td>company_profile</td>
-      <td>0.077765</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>has_company_logo</td>
-      <td>0.047659</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>industry_Oil &amp; Energy</td>
-      <td>0.046337</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>earn_desc</td>
-      <td>0.034458</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>function_Administrative</td>
-      <td>0.032784</td>
-    </tr>
-    <tr>
-      <th>5</th>
-      <td>time_desc</td>
-      <td>0.030940</td>
-    </tr>
-    <tr>
-      <th>6</th>
-      <td>requir_req</td>
-      <td>0.027134</td>
-    </tr>
-    <tr>
-      <th>7</th>
-      <td>per_desc</td>
-      <td>0.024678</td>
-    </tr>
-    <tr>
-      <th>8</th>
-      <td>skill_desc</td>
-      <td>0.020639</td>
-    </tr>
-    <tr>
-      <th>9</th>
-      <td>posit_desc</td>
-      <td>0.020025</td>
-    </tr>
-  </tbody>
-</table>
-</div></div></div>
-</div>
-<p>The result can imply several exciting characteristics of fake job postings:</p>
-<ol class="simple">
-<li><p>Fake job postings tend not to show their company profile and logo. This is an obvious remark because it is easy to assume that a fake company will post a fake job posting, but our result clearly supports the assumption!</p></li>
-<li><p>Fake job postings are more likely to be involved in the Oil &amp; Energy industry and administrative positions.</p></li>
-<li><p>Fake job postings tend to include the word “earn” in their description more than genuine job postings. This makes sense because posting fake jobs is to lure innocent people who need money.</p></li>
-</ol>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>with open(&#39;./pickle/rf_model.pkl&#39;, &#39;wb&#39;) as f:
-        pickle.dump(rf_model, f)
-</pre></div>
-</div>
-</div>
-</div>
+<div class="section" id="concluding-remark">
+<h2>Concluding Remark<a class="headerlink" href="#concluding-remark" title="Permalink to this headline">¶</a></h2>
+<p>Though our best model, the final random forest model, is far from perfect, we have set foot on a long but incredible journey of applying machine learning to solve problems. Throughout the process of understanding the data, cleaning the data, feature creation, training the model, and interpreting the results, we have had to make many relevant decisions. For instance, in training the random forest model, the lowest cross validation error and the highest sensitivity score both points to 300 trees, what is a good choice to make? Though we decided CV error is more important here, decisions like these aren’t always a clear cut, as they depend on the project requirements as well as data’s domain field. On our quest to conquer the infinite sets of problems in this whole wide world, we are confident that with larger samples as well as more time to delve into the data and tools, we can develop even better models than we have here.</p>
 </div>
 </div>
 
@@ -632,21 +454,7 @@ importances_df.sort_values(&quot;importances&quot;, ascending = False).reset_ind
               
             
                 <!-- Previous / next buttons -->
-<div class='prev-next-area'> 
-    <a class='left-prev' id="prev-link" href="TuningHPRF.html" title="previous page">
-        <i class="fas fa-angle-left"></i>
-        <div class="prev-next-info">
-            <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">Tuning the Hyperparameters of the Random Forest Model</p>
-        </div>
-    </a>
-    <a class='right-next' id="next-link" href="RFTest.html" title="next page">
-    <div class="prev-next-info">
-        <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Random Forest Result: Test Dataset</p>
-    </div>
-    <i class="fas fa-angle-right"></i>
-    </a>
+<div class='prev-next-area'>
 </div>
             
         </div>

@@ -372,6 +372,7 @@
                 
   <div class="tex2jax_ignore mathjax_ignore section" id="svm-result-test-dataset">
 <h1>SVM Result: Test Dataset<a class="headerlink" href="#svm-result-test-dataset" title="Permalink to this headline">¶</a></h1>
+<p>In this section, we will see the performance of the trained SVM on the test dataset.</p>
 <div class="cell tag_hide-output docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from sklearn.svm import SVC
@@ -433,7 +434,7 @@ disp.plot()
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;sklearn.metrics._plot.confusion_matrix.ConfusionMatrixDisplay at 0x276fc88bd30&gt;
 </pre></div>
 </div>
-<img alt="_images/SVMTest_5_1.png" src="_images/SVMTest_5_1.png" />
+<img alt="_images/SVMTest_6_1.png" src="_images/SVMTest_6_1.png" />
 </div>
 </div>
 <div class="cell docutils container">
@@ -455,6 +456,7 @@ weighted avg       0.98      0.98      0.97      3576
 </div>
 </div>
 </div>
+<p>The performance of SVM on the test set looks great! Compared to the SVM in the previous work, we have improved on both accuracy and recall rate. Especially there is quite an impressive improvement in the recall rate (30% to 58%), which implies another improvement in fixing the overfitting problem that arose in the previous work.</p>
 </div>
 
     <script type="text/x-thebe-config">
