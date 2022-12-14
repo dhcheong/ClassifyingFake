@@ -36,3 +36,6 @@ parts:
     - file: SVMTuning
     - file: SVMTrain
     - file: SVMTest
+- caption: Conclusion
+  chapters:
+  - file: Conclusion
